@@ -18,3 +18,5 @@ kfwer_knockoff_threshold <- function(W, k, fwer) {
 
 }
 
+optimize_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters) {
+}
