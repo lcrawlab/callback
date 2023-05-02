@@ -3,8 +3,6 @@ library(fossil) # for adjusted rand index and rand index
 
 library(dplyr)
 
-library(knockoff)
-
 source("estimate_zipoisson.R")
 
 
@@ -99,7 +97,7 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
   
   W <- log_original_p_values - log_knockoff_p_values
   
-  thres = knockoff.threshold(W, fdr=q, offset=1)
+  thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
   
   print(paste("threshold", thres))
   
@@ -150,7 +148,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
   
   W <- log_original_p_values - log_knockoff_p_values
   
-  thres = knockoff.threshold(W, fdr=q, offset=1)
+  thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
   
   hist(W, breaks = 100)
   abline(v=thres)
