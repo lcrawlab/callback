@@ -1,4 +1,4 @@
-library(pdfCluster) # for adjusted rand index
+library(  ) # for adjusted rand index
 library(fossil) # for adjusted rand index and rand index
 
 library(dplyr)
@@ -31,7 +31,7 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj) {
 }
 
 
-seurat_workflow <- function(seurat_obj, num_variable_features) {
+seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5) {
   seurat_obj <- Seurat::NormalizeData(seurat_obj)
  
   seurat_obj <- Seurat::FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
@@ -43,7 +43,7 @@ seurat_workflow <- function(seurat_obj, num_variable_features) {
   seurat_obj <- Seurat::RunPCA(seurat_obj, features = VariableFeatures(object = seurat_obj))
   
   seurat_obj <- Seurat::FindNeighbors(seurat_obj, dims = 1:10) # todo check if i should use all dims for knockoffs
-  seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = 0.5)
+  seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = resolution_param)
   
   seurat_obj <- Seurat::RunUMAP(seurat_obj, dims = 1:10)
   seurat_obj <- Seurat::RunTSNE(seurat_obj, dims = 1:10)
@@ -227,5 +227,28 @@ kfwer_knockoff_threshold <- function(W, k, fwer) {
 
 
 
-optimize_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters) {
+# todo make this more efficient
+choose_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters) {
+  new_seurat_obj <- seurat_obj
+
+  resolution_params <- seq(0.1, 2, 0.1)
+
+  for (resolution_param in resolution_params) {
+    new_seurat_obj <- Seurat::FindClusters(new_seurat_obj, resolution = resolution_param)
+
+    print("Original num clusters")
+    print(original_num_clusters)
+
+    print("Current clusters")
+    print(length(levels(Idents(new_seurat_obj))))
+
+    if (length(levels(Idents(new_seurat_obj))) > original_num_clusters) {
+      return("No resolution value possible")
+    }
+
+    if (length(levels(Idents(new_seurat_obj))) == original_num_clusters) {
+      return(resolution_param)
+    }
+
+  }
 }
