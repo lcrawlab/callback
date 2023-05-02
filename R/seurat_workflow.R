@@ -1,4 +1,3 @@
-library(Seurat)
 library(pdfCluster) # for adjusted rand index
 library(fossil) # for adjusted rand index and rand index
 
@@ -11,7 +10,7 @@ source("estimate_zipoisson.R")
 
 
 get_seurat_obj_with_knockoffs <- function(seurat_obj) {
-  var.features <- VariableFeatures(seurat_obj)
+  var.features <- Seurat::VariableFeatures(seurat_obj)
   seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
   
   seurat_obj_data <- seurat_obj_data[var.features]
@@ -28,28 +27,28 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj) {
   combined.data <- cbind(seurat_obj_data, ko)
   
   new_project_name <- paste0(seurat_obj@project.name, "_with_knockoffs")
-  new_seurat_obj <- CreateSeuratObject(counts = t(combined.data), project = new_project_name)
+  new_seurat_obj <- Seurat::CreateSeuratObject(counts = t(combined.data), project = new_project_name)
   
   return(new_seurat_obj)
 }
 
 
 seurat_workflow <- function(seurat_obj, num_variable_features) {
-  seurat_obj <- NormalizeData(seurat_obj)
+  seurat_obj <- Seurat::NormalizeData(seurat_obj)
  
-  seurat_obj <- FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  seurat_obj <- Seurat::FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
   
   all.genes <- rownames(seurat_obj)
   
-  seurat_obj <- ScaleData(seurat_obj, features = all.genes)
+  seurat_obj <- Seurat::ScaleData(seurat_obj, features = all.genes)
   
-  seurat_obj <- RunPCA(seurat_obj, features = VariableFeatures(object = seurat_obj))
+  seurat_obj <- Seurat::RunPCA(seurat_obj, features = VariableFeatures(object = seurat_obj))
   
-  seurat_obj <- FindNeighbors(seurat_obj, dims = 1:10) # todo check if i should use all dims for knockoffs
-  seurat_obj <- FindClusters(seurat_obj, resolution = 0.5)
+  seurat_obj <- Seurat::FindNeighbors(seurat_obj, dims = 1:10) # todo check if i should use all dims for knockoffs
+  seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = 0.5)
   
-  seurat_obj <- RunUMAP(seurat_obj, dims = 1:10)
-  seurat_obj <- RunTSNE(seurat_obj, dims = 1:10)
+  seurat_obj <- Seurat::RunUMAP(seurat_obj, dims = 1:10)
+  seurat_obj <- Seurat::RunTSNE(seurat_obj, dims = 1:10)
   
   # todo differential expression
   
@@ -70,7 +69,7 @@ compare_clusterings <- function(seurat_obj1, seurat_obj2) {
 }
 
 compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
-  markers <- FindMarkers(seurat_obj,
+  markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster,
                          logfc.threshold = 0,
                          min.pct = 0)
@@ -119,7 +118,7 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
 
 
 compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
-  markers <- FindMarkers(seurat_obj,
+  markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
                          ident.2 = cluster2,
                          logfc.threshold = 0,
@@ -185,10 +184,10 @@ FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_fe
   new_seurat_obj <- subset(seurat_obj, idents = c(ident.1, ident.2))
   
   # remove genes that are lowly expressed (i.e. all zeroes)
-  new_seurat_obj <- CreateSeuratObject(new_seurat_obj@assays$RNA@counts, min.cells = 10)
+  new_seurat_obj <- Seurat::CreateSeuratObject(new_seurat_obj@assays$RNA@counts, min.cells = 10)
   
 
-  new_seurat_obj <- FindVariableFeatures(new_seurat_obj, selection.method = "vst", nfeatures = num_var_features)
+  new_seurat_obj <- Seurat::FindVariableFeatures(new_seurat_obj, selection.method = "vst", nfeatures = num_var_features)
   
   
   new_seurat_obj <- get_seurat_obj_with_knockoffs(new_seurat_obj)
