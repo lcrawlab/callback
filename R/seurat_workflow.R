@@ -1,9 +1,10 @@
-library(  ) # for adjusted rand index
-library(fossil) # for adjusted rand index and rand index
+library(pdfCluster) # for adjusted rand index
+#library(fossil) # for adjusted rand index and rand index
 
 library(dplyr)
 
-source("estimate_zipoisson.R")
+# todo do this properly
+source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 
 
 
@@ -28,6 +29,48 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj) {
   new_seurat_obj <- Seurat::CreateSeuratObject(counts = t(combined.data), project = new_project_name)
   
   return(new_seurat_obj)
+}
+
+
+
+# todo make this more efficient
+# todo move this function into seurat_workflow so that it happens automatically and doesn't repeat computation
+cluster_optimal_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters, num_variable_features) {
+  new_seurat_obj <- seurat_obj
+
+  resolution_params <- seq(0.1, 2, 0.1)
+
+
+  new_seurat_obj <- Seurat::NormalizeData(new_seurat_obj)
+ 
+  new_seurat_obj <- Seurat::FindVariableFeatures(new_seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  
+  all.genes <- rownames(new_seurat_obj)
+  
+  new_seurat_obj <- Seurat::ScaleData(new_seurat_obj, features = all.genes)
+  
+  new_seurat_obj <- Seurat::RunPCA(new_seurat_obj, features = VariableFeatures(object = new_seurat_obj))
+  new_seurat_obj <- Seurat::FindNeighbors(new_seurat_obj, dims = 1:10) # todo check num dims
+
+  for (resolution_param in resolution_params) {
+    new_seurat_obj <- Seurat::FindClusters(new_seurat_obj, resolution = resolution_param)
+
+    print("Original num clusters")
+    print(original_num_clusters)
+
+    print("Current clusters")
+    print(length(levels(Idents(new_seurat_obj))))
+
+    if (length(levels(Idents(new_seurat_obj))) > original_num_clusters) {
+      stop("No resolution value possible")
+    }
+
+    if (length(levels(Idents(new_seurat_obj))) == original_num_clusters) {
+      print(paste0("Resolution param:", resolution_param))
+      return(resolution_param)
+    }
+
+  }
 }
 
 
@@ -227,28 +270,3 @@ kfwer_knockoff_threshold <- function(W, k, fwer) {
 
 
 
-# todo make this more efficient
-choose_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters) {
-  new_seurat_obj <- seurat_obj
-
-  resolution_params <- seq(0.1, 2, 0.1)
-
-  for (resolution_param in resolution_params) {
-    new_seurat_obj <- Seurat::FindClusters(new_seurat_obj, resolution = resolution_param)
-
-    print("Original num clusters")
-    print(original_num_clusters)
-
-    print("Current clusters")
-    print(length(levels(Idents(new_seurat_obj))))
-
-    if (length(levels(Idents(new_seurat_obj))) > original_num_clusters) {
-      return("No resolution value possible")
-    }
-
-    if (length(levels(Idents(new_seurat_obj))) == original_num_clusters) {
-      return(resolution_param)
-    }
-
-  }
-}
