@@ -1,7 +1,5 @@
-library(lamW)
 
 # https://math.stackexchange.com/questions/2761563/maximum-likelihood-estimation-for-zero-inflated-poisson-distribution
-
 estimate_zi_poisson <- function(data) {
   num.zeros <- sum(data == 0)
   r0 <- 1 /length(data) * num.zeros
@@ -10,7 +8,7 @@ estimate_zi_poisson <- function(data) {
   
   gamma <- x.bar / (1 - r0)
   
-  lambda.hat <- lambertW0(-gamma * exp(-gamma)) + gamma
+  lambda.hat <- lamW::lambertW0(-gamma * exp(-gamma)) + gamma
   
   pi.hat <- (r0 - exp(-lambda.hat)) / (1 - exp(-lambda.hat))
   
