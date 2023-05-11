@@ -2,6 +2,7 @@ library(pdfCluster) # for adjusted rand index
 #library(fossil) # for adjusted rand index and rand index
 
 library(dplyr)
+library(ggplot2)
 
 # todo do this properly
 source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
@@ -193,9 +194,27 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
   
   thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
   
-  hist(W, breaks = 100)
+  hist(W, breaks = 30)
   abline(v=thres)
   abline(v=-thres)
+
+  W_hist <- ggplot() + aes(W) + 
+    geom_histogram(binwidth=1, colour="black", fill="white") + 
+    geom_vline(xintercept=thres) +
+    geom_vline(xintercept=-thres) +
+    theme(axis.line = element_line(colour = "black", size=2),
+        panel.background = element_blank(),
+        axis.title.x = element_text("W", size = 8), 
+        axis.title.y = element_text("Count", size = 8), 
+        #axis.text.x = element_blank(), 
+        #axis.text.y = element_blank(), 
+        legend.title = element_blank(), 
+        legend.text = element_blank(),
+        legend.position = "none")
+
+
+  ggsave("B_cell_W_hist.png")
+
   
   print(paste("threshold", thres))
 
@@ -270,3 +289,27 @@ kfwer_knockoff_threshold <- function(W, k, fwer) {
 
 
 
+tmp_jaccard <- function(a, b) {
+  intersection = length(intersect(a, b))
+  union = length(a) + length(b) - intersection
+  return (intersection/union)
+}
+
+compare_markers_jaccard <- function(orig_seurat_obj, knock_seurat_obj, q,
+                                    orig_ident_1, orig_ident_2, 
+                                    knock_ident_1, knock_ident_2) {
+  
+  original.markers <- Seurat::FindMarkers(orig_seurat_obj, ident.1 = orig_ident_1, ident.2 = orig_ident_2, features = VariableFeatures(orig_seurat_obj))
+  #knockoff.markers <- FindMarkers(knock_seurat_obj, ident.1 = knock_ident_1, ident.2 = knock_ident_2)
+  
+  markers.selected <- compute_knockoff_filter(knock_seurat_obj, knock_ident_1, knock_ident_2, q)
+  
+  top.original <- rownames(head(original.markers, 100))
+  top.knockoffs <- head(markers.selected, 100)$selected_gene
+  
+  
+  ret_list <- list("jaccard" = tmp_jaccard(top.original, top.knockoffs),
+                   "original_selected" = dim(original.markers)[1],
+                   "knockoff_selected" = dim(markers.selected)[1])
+  return(ret_list)
+}
