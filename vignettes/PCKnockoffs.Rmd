@@ -1,0 +1,79 @@
+---
+title: "Illustrating PCKnockoffs with 10x Genomics PBMC Data"
+author: "Alan DenAdel"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+description: >
+  Learn how to analyze data with PCKnockoffs.
+vignette: >
+  %\VignetteIndexEntry{Illustrating PCKnockoffs with 10x Genomics PBMC Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#",
+  fig.width=7,
+  fig.height=5
+)
+library(knitr)
+```
+
+### Please Cite Us
+
+If you use PCKnockoffs in published research, please cite:
+
+> 
+
+
+# Getting Started
+Load necessary libraries.
+
+For a working installation of mvMAPIT please look at the`README.md` or `vignette("docker-pcknockoffs")`
+```{r load_dependencies, message=FALSE}
+library(PCKnockoffs)
+library(dplyr)
+library(ggplot2)
+library(Seurat)
+```
+
+We will be analyzing a dataset of Peripheral Blood Mononuclear Cells (PBMCs) from 10X Genomics. There are 2,700 single cells and the raw data can be found [here](https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz).
+
+Load the PBMC data and create a Seurat object
+```
+pbmc.data <- Read10X(data.dir = "~/Analysis/knockoffs/filtered_gene_bc_matrices/hg19/")
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+
+# Running PCKnockoffs
+
+
+
+
+
+```
+p <- 2000
+pbmc <- FindVariableFeatures(pbmc, selection.method = "vst", nfeatures = p)
+
+pbmc2 <- get_seurat_obj_with_knockoffs(pbmc)
+
+# perform seurat workflow on both original data and original data + knockoffs
+pbmc <- seurat_workflow(pbmc, p, resolution_param=0.8)
+
+original_num_clusters <- length(levels(Idents(pbmc)))
+
+res_param <- cluster_optimal_louvain_resolution_parameter(pbmc2, original_num_clusters, 2 * p)
+
+pbmc2 <- seurat_workflow(pbmc2, 2*p, res_param)
+
+compare_clusterings(pbmc, pbmc2)
+compare_markers_jaccard(pbmc, pbmc2, 0.1, 0, 1, 1, 2)
+```
+
+
+
+
+
