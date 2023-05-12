@@ -33,7 +33,7 @@ Load necessary libraries.
 
 For a working installation of mvMAPIT please look at the`README.md` or `vignette("docker-pcknockoffs")`
 ```{r load_dependencies, message=FALSE}
-library(PCKnockoffs)
+#library(PCKnockoffs)
 library(dplyr)
 library(ggplot2)
 library(Seurat)
