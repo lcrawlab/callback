@@ -2,7 +2,7 @@
 # Familywise error rate control via knockoffs
 # by Lucas Janson and Weijie Su
 
-knockoff.kfwer.threshold() <- function(W, k, alpha) {
+knockoff.kfwer.threshold <- function(W, k, alpha) {
     
     # determined by equation 3.1 (in Theorem 3.1)
     # NB(r,p) -> p(k) = (k + r - 1 choose k) * (1-p)^k * p^r
