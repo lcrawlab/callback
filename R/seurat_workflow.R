@@ -4,7 +4,8 @@
 source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 
 
-
+#' @name get_seurat_obj_with_knockoffs
+#' @export
 get_seurat_obj_with_knockoffs <- function(seurat_obj) {
   var.features <- Seurat::VariableFeatures(seurat_obj)
   seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
@@ -30,9 +31,14 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj) {
 
 
 
-# todo make this more efficient
-# todo move this function into seurat_workflow so that it happens automatically and doesn't repeat computation
+
+#' @name cluster_optimal_louvain_resolution_parameter
+#' @export
 cluster_optimal_louvain_resolution_parameter <- function(seurat_obj, original_num_clusters, num_variable_features) {
+
+  # todo make this more efficient
+  # todo move this function into seurat_workflow so that it happens automatically and doesn't repeat computation
+
   new_seurat_obj <- seurat_obj
 
   resolution_params <- seq(0.1, 2, 0.1)
@@ -71,6 +77,8 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj, original_nu
 }
 
 
+#' @name seurat_workflow
+#' @export
 seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5) {
   seurat_obj <- Seurat::NormalizeData(seurat_obj)
  
@@ -95,6 +103,8 @@ seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=
   return(seurat_obj)
 }
 
+#' @name compare_clusterings
+#' @export
 compare_clusterings <- function(seurat_obj1, seurat_obj2) {
   # todo plot umap/tsne side by side
   
@@ -106,7 +116,11 @@ compare_clusterings <- function(seurat_obj1, seurat_obj2) {
   return(ari)
 }
 
+#' @name compute_knockoff_filter_one_cluster
+#' @export
 compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
+  # todo test this function
+
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster,
                          logfc.threshold = 0,
@@ -154,7 +168,8 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
   
 }
 
-
+#' @name compute_knockoff_filter
+#' @export
 compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
@@ -231,12 +246,15 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
 
 
 
-# todo test this function
-# todo create knockoffs from entire dataset before subsetting 
-# todo subset dataset with knockoffs based on the chosen cluster identities
-# todo redo clustering with K=2
-# todo test markers between knew clusters
+
+#' @name FindMarkersWithKnockoffs
+#' @export
 FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_features) {
+  # todo test this function
+  # todo create knockoffs from entire dataset before subsetting 
+  # todo subset dataset with knockoffs based on the chosen cluster identities
+  # todo redo clustering with K=2
+  # todo test markers between knew clusters
   new_seurat_obj <- subset(seurat_obj, idents = c(ident.1, ident.2))
   
   # remove genes that are lowly expressed (i.e. all zeroes)
@@ -272,13 +290,16 @@ FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_fe
 
 
 
-
+#' @name tmp_jaccard
+#' @export
 tmp_jaccard <- function(a, b) {
   intersection = length(intersect(a, b))
   union = length(a) + length(b) - intersection
   return (intersection/union)
 }
 
+#' @name compare_markers_jaccard
+#' @export
 compare_markers_jaccard <- function(orig_seurat_obj, knock_seurat_obj, q,
                                     orig_ident_1, orig_ident_2, 
                                     knock_ident_1, knock_ident_2) {
