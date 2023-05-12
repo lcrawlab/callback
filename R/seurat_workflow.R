@@ -1,8 +1,4 @@
-library(pdfCluster) # for adjusted rand index
-#library(fossil) # for adjusted rand index and rand index
 
-library(dplyr)
-library(ggplot2)
 
 # todo do this properly
 source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
@@ -106,7 +102,7 @@ compare_clusterings <- function(seurat_obj1, seurat_obj2) {
   cluster1 <- seurat_obj1@active.ident
   cluster2 <- seurat_obj2@active.ident
   
-  ari <- adj.rand.index(cluster1, cluster2)
+  ari <- pdfCluster::adj.rand.index(cluster1, cluster2)
   return(ari)
 }
 
@@ -198,7 +194,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
   abline(v=thres)
   abline(v=-thres)
 
-  W_hist <- ggplot() + aes(W) + 
+  W_hist <- ggplot2::ggplot() + aes(W) + 
     geom_histogram(binwidth=1, colour="black", fill="white") + 
     geom_vline(xintercept=thres) +
     geom_vline(xintercept=-thres) +
@@ -274,18 +270,6 @@ FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_fe
 
 
 
-
-# thres = knockoff.threshold(W, fdr=q, offset=1)
-
-# todo implement this k-fwer threshold and the more conservative threshold with the min
-# https://arxiv.org/abs/1505.06549
-# Familywise error rate control via knockoffs
-# https://github.com/amspector100/knockpy/blob/master/knockpy/knockoff_stats.py#L1324
-# https://github.com/cran/knockoff/blob/master/R/knockoff_filter.R#L181
-kfwer_knockoff_threshold <- function(W, k, fwer) {
-  # todo report if there is no valid v parameter (i.e. if k is small)
-  
-}
 
 
 

@@ -14,4 +14,6 @@ Depends:
 Imports: 
     Seurat,
     lamW,
-    knockoff
+    knockoff,
+    ggplot2,
+    pdfCluster
