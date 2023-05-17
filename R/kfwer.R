@@ -2,6 +2,15 @@
 # Familywise error rate control via knockoffs
 # by Lucas Janson and Weijie Su
 
+#' Add together two numbers
+#' 
+#' @param W A vector of Knockoff statistics
+#' @param k Defines k-FWER
+#' @returns alpha
+#' @examples
+#' knockoff.fwer.threshold(W, 4, 0.05)
+#' @name knockoff.kfwer.threshold
+#' @export
 knockoff.kfwer.threshold <- function(W, k, alpha) {
     
     # determined by equation 3.1 (in Theorem 3.1)
