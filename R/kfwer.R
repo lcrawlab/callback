@@ -1,9 +1,16 @@
-# This function is based off of the paper 
-# Familywise error rate control via knockoffs
-# by Lucas Janson and Weijie Su
 
-#' Add together two numbers
-#' 
+
+
+#' @title Returns a threshold that controls the k-FWER at level alpha for the given distribution of knockoff statistics.
+#'
+#' @description Given a vector of knockoff statistics, returns a threshold that controls the k-FWER at level alpha.
+#'
+#' @details Given \eqn{k} and \eqn{\alpha}, calculates a parameter \eqn{v} and then returns as a threshold the \eqn{v}th
+#' smallest (i.e. most negative) knockoff statistic. This assumes that knockoff statistics are symmetrically distributed
+#' about 0 (for example when \eqn{W = U_o - U_k}). The parameter \eqn{v} is calculated under a negative binomial model
+#' for the signs of the null knockoff statistics.
+#' This function is based off of the paper Familywise error rate control via knockoffs by Lucas Janson and Weijie Su
+#'
 #' @param W A vector of Knockoff statistics
 #' @param k Defines k-FWER
 #' @returns alpha
