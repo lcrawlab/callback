@@ -13,7 +13,8 @@
 #'
 #' @param W A vector of Knockoff statistics
 #' @param k Defines k-FWER
-#' @returns alpha
+#' @param alpha
+#' @returns A threshold that controls the k-FWER
 #' @examples
 #' knockoff.fwer.threshold(W, 4, 0.05)
 #' @name knockoff.kfwer.threshold
