@@ -4,6 +4,16 @@
 source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 
 
+#' @title Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.
+#'
+#' @description Given a a Seurat object, returns a new Seurat object whose RNA expression counts includes the 
+#' variable features from the original object and an equal number of knockoff features.
+#'
+#' @details 
+#'
+#' @param seurat_obj A Seurat object containing RNA expression counts
+#' @returns A seurat object that contains the original variable features and an equal number of knockoff features.
+#' @examples
 #' @name get_seurat_obj_with_knockoffs
 #' @export
 get_seurat_obj_with_knockoffs <- function(seurat_obj) {
