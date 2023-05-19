@@ -6,7 +6,7 @@ source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 
 #' @title Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.
 #'
-#' @description Given a a Seurat object, returns a new Seurat object whose RNA expression counts includes the 
+#' @description Given a Seurat object, returns a new Seurat object whose RNA expression counts includes the 
 #' variable features from the original object and an equal number of knockoff features.
 #'
 #' @details 
@@ -113,9 +113,20 @@ seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=
   return(seurat_obj)
 }
 
-#' @name compare_clusterings
+
+#' @title Returns the adjusted Rand index for the active identities in two Seurat objects
+#'
+#' @description Given two Seurat objects, returns the adjusted Rand index for the active identities of each of the objects.
+#' @details 
+#'
+#' @param seurat_obj1 A Seurat object 
+#' @param seurat_obj2 A Seurat object
+#' @returns The adjusted Rand index for the active identities of each of the objects.
+#' @examples
+#' compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
+#' @name compare_Seurat_clusterings
 #' @export
-compare_clusterings <- function(seurat_obj1, seurat_obj2) {
+compare_Seurat_clusterings <- function(seurat_obj1, seurat_obj2) {
   # todo plot umap/tsne side by side
   
   # compute ARI
