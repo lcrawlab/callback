@@ -87,6 +87,18 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj, original_nu
 }
 
 
+#' @title Runs a typical Seurat workflow on a Seurat object (up to dimensionality reduction and clustering).
+#'
+#' @description Given a Seurat object, returns a new Seurat that has been normalized, had variable features identified,
+#' scaled, had principal components computed, had clusters identified, and had tSNE and UMAP embeddings determined.
+#'
+#' @details 
+#'
+#' @param seurat_obj A Seurat object that will be analyzed.
+#' @param num_variable_features The number of variable features to use in the analysis.
+#' @param resolution_param The resolution parameter to use when clustering.
+#' @returns A Seurat object containing the relevant analysis results.
+#' @examples
 #' @name seurat_workflow
 #' @export
 seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5) {
