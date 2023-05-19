@@ -6,8 +6,6 @@
 
 ## Installation
 
-## Development version
-
 You can install the lastest development version by using the [devtools](https://CRAN.R-project.org/package=devtools) library. To install this package with devtools, use this command:
 
 ```r
