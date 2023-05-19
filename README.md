@@ -25,4 +25,11 @@ For questions or concerns with the MAPIT functions, please contact
 
 ## References
 
+If you use `PCKNockoffs` in your work, please cite the `PCKNockoffs` publication as follows:
+
+> **paper title**
+>
+> Alan DenAdel and Lorin Crawford
+>
+>_journal_ data doi: []().
 
