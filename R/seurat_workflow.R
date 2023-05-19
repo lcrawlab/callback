@@ -322,10 +322,19 @@ FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_fe
 
 
 
-
-#' @name tmp_jaccard
+#' @title Returns the Jaccard coefficient of two vectors.
+#'
+#' @description Given two vectors, returns their Jaccard coefficient.
+#' @details 
+#'
+#' @param a A vector 
+#' @param b A vector
+#' @returns The Jaccard coefficient of two vectors.
+#' @examples
+#' jaccard(c(1,2,3), c(3,4,5))
+#' @name jaccard
 #' @export
-tmp_jaccard <- function(a, b) {
+jaccard <- function(a, b) {
   intersection = length(intersect(a, b))
   union = length(a) + length(b) - intersection
   return (intersection/union)
