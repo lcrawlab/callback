@@ -44,3 +44,32 @@ knockoff.kfwer.threshold <- function(W, k, alpha) {
 
     return(T_v)
 }
+
+
+
+#' @title Returns the maximum of the threshold that controls the FDR at level q and the threshold that controls the k-FWER at level alpha.
+#'
+#' @description Given a vector of knockoff statistics, returns the maximum of the threshold that controls the FDR at 
+#' level q and the threshold that controls the k-FWER at level alpha.
+#'
+#' @details Given \eqn{q}, \eqn{k}, and \eqn{\alpha}, calculates the threshold that controls the FDR at level \eqn{q} and the
+#' threshold that controls the \eqn{k}-FWER at level \eqn{\alpha} and returns the maximum of the two.
+#'
+#' @param W A vector of Knockoff statistics
+#' @param q The desired control for the FDR
+#' @param k Defines k-FWER
+#' @param alpha The desired control for the FWER.
+#' @returns The maximum of the threshold that controls the FDR and the threshold that controls the k-FWER
+#' @examples
+#' knockoff.heuristic.threshold(W, 0.1, 4, 0.05)
+#' @name knockoff.heuristic.threshold
+#' @export
+knockoff.heuristic.threshold <- function(W, q, k, alpha) {
+    kfwer_threshold <- knockoff.kfwer.threshold(W, k, alpha)
+
+    fdr_threshold <- knockoff::knockoff.threshold(W, fdr=q, offset=1)
+
+    heuristic_threshold <- max(fdr_threshold, kfwer_threshold)
+
+    return(heuristic_threshold)
+}
