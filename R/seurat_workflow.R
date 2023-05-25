@@ -203,7 +203,7 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
 
 #' @name compute_knockoff_filter
 #' @export
-compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
+compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all_W=FALSE) {
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
                          ident.2 = cluster2,
@@ -262,7 +262,11 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q) {
   
   print(paste("threshold", thres))
 
-  
+  if (return_all_W) {
+    ret <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
+
+    return(ret)
+  }
   selected_indices = which(W >= thres)
   
   selected_genes <- original_names_sorted[selected_indices]
