@@ -201,9 +201,24 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
   
 }
 
+#' @title Returns the genes selected by the knockoff filter
+#'
+#' @description Given two Seurat objects, returns the  the genes selected by the knockoff filter and their W statistics.
+#' @details 
+#'
+#' @param seurat_obj1 A Seurat object 
+#' @param seurat_obj2 A Seurat object
+#' @param cluster1 The Idents of the cluster of interest in seurat_obj1
+#' @param cluster2 The Idents of the cluster of interest in seurat_obj2
+#' @param q The desired rate to control the FDR at
+#' @param return_all Determines if the returned object will contain all genes or just the selected genes.
+
+#' @returns The adjusted Rand index for the active identities of each of the objects.
+#' @examples
+#' compute_knockoff_filter(seurat_obj1, seurat_obj2, 1, 2, 0.05)
 #' @name compute_knockoff_filter
 #' @export
-compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all_W=FALSE) {
+compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all=FALSE) {
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
                          ident.2 = cluster2,
@@ -262,7 +277,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   
   print(paste("threshold", thres))
 
-  if (return_all_W) {
+  if (return_all) {
     ret <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
 
     return(ret)
