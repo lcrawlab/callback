@@ -237,20 +237,24 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
                          min.pct = 0)
   
 
+  # FindMarkers orders by p-value, so we can't rely on position to know which genes are which
   knockoff.indices <- grepl("^knockoff", rownames(markers))
   original.indices <- !knockoff.indices
   
+  # subset the markers data.frame into originals and knockoffs
   knockoff.markers <- markers[knockoff.indices, ]
   original.markers <- markers[original.indices, ]
   
   all.genes <- rownames(seurat_obj)
   
+  # get indices of knockoffs and originals from seurat_obj, should be [FALSE, ..., FALSE, TRUE, ..., TRUE]
   knockoff.indices.sorted <- grepl("^knockoff", all.genes)
   original.indices.sorted <- !knockoff.indices.sorted
   
   knockoff_names_sorted <- all.genes[knockoff.indices.sorted]
   original_names_sorted <- all.genes[original.indices.sorted]
 
+  # sort markers data.frames by their original orderings
   knockoff.markers.sorted <- knockoff.markers[knockoff_names_sorted, ]
   original.markers.sorted <- original.markers[original_names_sorted, ]
   
