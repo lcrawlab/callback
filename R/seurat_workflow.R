@@ -374,7 +374,7 @@ compare_markers_jaccard <- function(orig_seurat_obj, knock_seurat_obj, q,
   top.knockoffs <- head(markers.selected, 100)$selected_gene
   
   
-  ret_list <- list("jaccard" = tmp_jaccard(top.original, top.knockoffs),
+  ret_list <- list("jaccard" = jaccard(top.original, top.knockoffs),
                    "original_selected" = dim(original.markers)[1],
                    "knockoff_selected" = dim(markers.selected)[1])
   return(ret_list)
