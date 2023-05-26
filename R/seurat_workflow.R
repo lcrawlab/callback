@@ -12,21 +12,32 @@ source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 #' @details 
 #'
 #' @param seurat_obj A Seurat object containing RNA expression counts
-#' @returns A seurat object that contains the original variable features and an equal number of knockoff features.
+#' @returns A Seurat object that contains the original variable features and an equal number of knockoff features.
 #' @examples
 #' @name get_seurat_obj_with_knockoffs
 #' @export
-get_seurat_obj_with_knockoffs <- function(seurat_obj) {
+get_seurat_obj_with_knockoffs <- function(seurat_obj, subset_n=10000) {
   var.features <- Seurat::VariableFeatures(seurat_obj)
-  seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
+  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
   
-  seurat_obj_data <- seurat_obj_data[var.features]
+  #seurat_obj_data <- seurat_obj_data[var.features]
+
+  print("Pulling data from Seurat object")
+  seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[VariableFeatures(seurat_obj),])))
+
+  print("Subsetting cells")
+  if (subset_n < nrow(seurat_obj_data)) {
+    seurat_obj_data <- seurat_obj_data[sample(nrow(seurat_obj_data), subset_n), ]
+  }
+
+  print(dim(seurat_obj_data))
   
   
+  print("Computing MLE for zero inflated poisson")
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
   
   print("computing knockoffs")
-  ko <- as.data.frame(lapply(ml_estimates, function(x) rzipoisson(dim(seurat_obj_data[1]), x$lambda.hat, x$pi.hat)))
+  ko <- as.data.frame(lapply(ml_estimates, function(x) rzipoisson(nrow(seurat_obj_data), x$lambda.hat, x$pi.hat)))
   
 
   num_variable_features <- length(var.features)
