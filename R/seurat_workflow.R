@@ -2,7 +2,7 @@
 
 # todo do this properly
 source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
-
+source("/Users/alandenadel/Code/repos/PCKnockoffs/R/kfwer.R")
 
 #' @title Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.
 #'
@@ -16,7 +16,7 @@ source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
 #' @examples
 #' @name get_seurat_obj_with_knockoffs
 #' @export
-get_seurat_obj_with_knockoffs <- function(seurat_obj, subset_n=10000) {
+get_seurat_obj_with_knockoffs <- function(seurat_obj) {
   var.features <- Seurat::VariableFeatures(seurat_obj)
   #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
   
@@ -25,12 +25,6 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, subset_n=10000) {
   print("Pulling data from Seurat object")
   seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[VariableFeatures(seurat_obj),])))
 
-  print("Subsetting cells")
-  if (subset_n < nrow(seurat_obj_data)) {
-    seurat_obj_data <- seurat_obj_data[sample(nrow(seurat_obj_data), subset_n), ]
-  }
-
-  print(dim(seurat_obj_data))
   
   
   print("Computing MLE for zero inflated poisson")
@@ -112,22 +106,27 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj, original_nu
 #' @examples
 #' @name seurat_workflow
 #' @export
-seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5) {
+seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5, visualization_method="umap") {
   seurat_obj <- Seurat::NormalizeData(seurat_obj)
  
   seurat_obj <- Seurat::FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
   
   all.genes <- rownames(seurat_obj)
   
-  seurat_obj <- Seurat::ScaleData(seurat_obj, features = all.genes)
+  #seurat_obj <- Seurat::ScaleData(seurat_obj, features = all.genes)
+  seurat_obj <- Seurat::ScaleData(seurat_obj)
   
   seurat_obj <- Seurat::RunPCA(seurat_obj, features = VariableFeatures(object = seurat_obj))
   
   seurat_obj <- Seurat::FindNeighbors(seurat_obj, dims = 1:10) # todo check if i should use all dims for knockoffs
   seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = resolution_param)
   
-  seurat_obj <- Seurat::RunUMAP(seurat_obj, dims = 1:10)
-  seurat_obj <- Seurat::RunTSNE(seurat_obj, dims = 1:10)
+  if (visualization_method == "umap") {
+    seurat_obj <- Seurat::RunUMAP(seurat_obj, dims = 1:10)
+  }
+  if (visualization_method == "tsne") {
+    seurat_obj <- Seurat::RunTSNE(seurat_obj, dims = 1:10)
+  }
   
   # todo differential expression
   
@@ -267,33 +266,13 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   W <- log_original_p_values - log_knockoff_p_values
   
   thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
-  
-  hist(W, breaks = 30)
-  abline(v=thres)
-  abline(v=-thres)
 
-  W_hist <- ggplot2::ggplot() + aes(W) + 
-    geom_histogram(binwidth=1, colour="black", fill="white") + 
-    geom_vline(xintercept=thres) +
-    geom_vline(xintercept=-thres) +
-    theme(axis.line = element_line(colour = "black", size=2),
-        panel.background = element_blank(),
-        axis.title.x = element_text("W", size = 8), 
-        axis.title.y = element_text("Count", size = 8), 
-        #axis.text.x = element_blank(), 
-        #axis.text.y = element_blank(), 
-        legend.title = element_blank(), 
-        legend.text = element_blank(),
-        legend.position = "none")
-
-
-  ggsave("B_cell_W_hist.png")
-
-  
-  print(paste("threshold", thres))
+  print(paste("threshold:", thres))
 
   if (return_all) {
-    ret <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
+    all_features <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
+
+    ret <-  list("all_features"=all_features, "threshold"=thres)
 
     return(ret)
   }
@@ -302,9 +281,11 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   selected_genes <- original_names_sorted[selected_indices]
   selected_Ws <- W[selected_indices]
   
-  ret <- as.data.frame(list("selected_gene" = selected_genes, "W" = selected_Ws))
+  selected_features <- as.data.frame(list("selected_gene" = selected_genes, "W" = selected_Ws))
   
-  ret <- ret[order(ret$W, decreasing = TRUE),]
+  selected_features <- selected_features[order(selected_features$W, decreasing = TRUE),]
+
+  ret <-  list("selected_features"=selected_features, "threshold"=thres)
   
   return(ret)
 }
@@ -384,6 +365,9 @@ compare_markers_jaccard <- function(orig_seurat_obj, knock_seurat_obj, q,
   #knockoff.markers <- FindMarkers(knock_seurat_obj, ident.1 = knock_ident_1, ident.2 = knock_ident_2)
   
   markers.selected <- compute_knockoff_filter(knock_seurat_obj, knock_ident_1, knock_ident_2, q)
+
+  thres <- markers.selected$threshold
+  markers.selected <- markers.selected$selected_features
   
   top.original <- rownames(head(original.markers, 100))
   top.knockoffs <- head(markers.selected, 100)$selected_gene
