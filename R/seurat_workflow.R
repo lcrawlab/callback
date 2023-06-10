@@ -228,7 +228,7 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
 #' compute_knockoff_filter(seurat_obj1, seurat_obj2, 1, 2, 0.05)
 #' @name compute_knockoff_filter
 #' @export
-compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all=FALSE) {
+compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all=FALSE, threshold="fdr") {
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
                          ident.2 = cluster2,
@@ -264,8 +264,22 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   log_knockoff_p_values <- -log10(knockoff_p_values)
   
   W <- log_original_p_values - log_knockoff_p_values
-  
-  thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
+
+  if (threshold == "fdr") {
+    thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
+  }
+
+  if (threshold == "kfwer") {
+    k <- 100
+    alpha <- q
+    thres <- knockoff.kfwer.threshold(W, k, alpha)
+  }
+
+  if (threshold == "heuristic") {
+    k <- 100
+    alpha <- q
+    thres <- knockoff.heuristic.threshold(W, q, k, alpha)
+  }
 
   print(paste("threshold:", thres))
 
