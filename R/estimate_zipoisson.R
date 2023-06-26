@@ -18,6 +18,7 @@ estimate_zi_poisson <- function(data) {
 
 rzipoisson <- function(n, lambda, prop.zero) {
   data <- c()
+
   for (i in 1:n) {
     if (runif(1) < prop.zero) {
       data[i] <- 0
