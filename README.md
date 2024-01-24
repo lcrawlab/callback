@@ -1,4 +1,4 @@
-# KCC
+# Knockoff Calibrated Clustering (KCC)
 
 ## Introduction
 
