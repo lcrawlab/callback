@@ -1,0 +1,6 @@
+^LICENSE\.md$
+^Dockerfile$
+^tmp$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
