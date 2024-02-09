@@ -1,4 +1,4 @@
-# Knockoff Calibrated Clustering (KCC)
+# callback (Calibrated Clustering via Knockoffs) <img src="man/figures/callback_logo.png" align="right" alt="" width="120"/>
 
 ## Introduction
 
