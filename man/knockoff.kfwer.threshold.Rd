@@ -10,6 +10,8 @@ knockoff.kfwer.threshold(W, k, alpha)
 \item{W}{A vector of Knockoff statistics}
 
 \item{k}{Defines k-FWER}
+
+\item{alpha}{The desired control for the FWER.}
 }
 \value{
 A threshold that controls the k-FWER
@@ -23,7 +25,4 @@ smallest (i.e. most negative) knockoff statistic. This assumes that knockoff sta
 about 0 (for example when \eqn{W = U_o - U_k}). The parameter \eqn{v} is calculated under a negative binomial model
 for the signs of the null knockoff statistics.
 This function is based off of the paper Familywise error rate control via knockoffs by Lucas Janson and Weijie Su
-}
-\examples{
-knockoff.fwer.threshold(W, 4, 0.05)
 }

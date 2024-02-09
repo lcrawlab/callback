@@ -13,10 +13,8 @@ compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 }
 \value{
 The adjusted Rand index for the active identities of each of the objects.
+compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 }
 \description{
 Given two Seurat objects, returns the adjusted Rand index for the active identities of each of the objects.
-}
-\examples{
-compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 }

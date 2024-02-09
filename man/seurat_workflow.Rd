@@ -4,7 +4,14 @@
 \alias{seurat_workflow}
 \title{Runs a typical Seurat workflow on a Seurat object (up to dimensionality reduction and clustering).}
 \usage{
-seurat_workflow(seurat_obj, num_variable_features, resolution_param = 0.5)
+seurat_workflow(
+  seurat_obj,
+  num_variable_features,
+  resolution_param = 0.5,
+  visualization_method = "umap",
+  num_dims = 10,
+  algorithm = "louvain"
+)
 }
 \arguments{
 \item{seurat_obj}{A Seurat object that will be analyzed.}
@@ -12,6 +19,12 @@ seurat_workflow(seurat_obj, num_variable_features, resolution_param = 0.5)
 \item{num_variable_features}{The number of variable features to use in the analysis.}
 
 \item{resolution_param}{The resolution parameter to use when clustering.}
+
+\item{visualization_method}{Either "umap" or "tsne".}
+
+\item{num_dims}{The number of principal components to use.}
+
+\item{algorithm}{The clustering algorithm to use, either "louvain" or "leiden".}
 }
 \value{
 A Seurat object containing the relevant analysis results.

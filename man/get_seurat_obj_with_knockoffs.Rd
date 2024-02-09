@@ -4,10 +4,12 @@
 \alias{get_seurat_obj_with_knockoffs}
 \title{Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.}
 \usage{
-get_seurat_obj_with_knockoffs(seurat_obj, subset_n = 10000)
+get_seurat_obj_with_knockoffs(seurat_obj, assay = "RNA")
 }
 \arguments{
-\item{seurat_obj}{A Seurat object containing RNA expression counts}
+\item{seurat_obj}{A Seurat object containing RNA expression counts.}
+
+\item{assay}{The assay to generate knockoffs from.}
 }
 \value{
 A Seurat object that contains the original variable features and an equal number of knockoff features.

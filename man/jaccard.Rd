@@ -17,6 +17,6 @@ The Jaccard coefficient of two vectors.
 \description{
 Given two vectors, returns their Jaccard coefficient.
 }
-\examples{
-jaccard(c(1,2,3), c(3,4,5))
+\details{
+blank
 }

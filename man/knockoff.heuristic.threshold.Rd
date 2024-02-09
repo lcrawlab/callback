@@ -26,6 +26,3 @@ level q and the threshold that controls the k-FWER at level alpha.
 Given \eqn{q}, \eqn{k}, and \eqn{\alpha}, calculates the threshold that controls the FDR at level \eqn{q} and the
 threshold that controls the \eqn{k}-FWER at level \eqn{\alpha} and returns the maximum of the two.
 }
-\examples{
-knockoff.heuristic.threshold(W, 0.1, 4, 0.05)
-}

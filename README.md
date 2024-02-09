@@ -20,6 +20,12 @@ devtools::install_github("lcrawlab/KCC")
 ## Tutorial
 
 ```r
+library(Seurat)
+library(kcc)
+
+pbmc.data <- Read10X(data.dir = "")
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
 pbmc <- NormalizeData(pbmc)
 pbmc <- FindVariableFeatures(pbmc)
 pbmc <- ScaleData(pbmc)

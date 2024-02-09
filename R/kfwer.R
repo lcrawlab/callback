@@ -13,12 +13,9 @@
 #'
 #' @param W A vector of Knockoff statistics
 #' @param k Defines k-FWER
-#' @param alpha
+#' @param alpha The desired control for the FWER.
 #' @returns A threshold that controls the k-FWER
-#' @examples
-#' knockoff.fwer.threshold(W, 4, 0.05)
 #' @name knockoff.kfwer.threshold
-#' @export
 knockoff.kfwer.threshold <- function(W, k, alpha) {
     
     # determined by equation 3.1 (in Theorem 3.1)
@@ -26,7 +23,7 @@ knockoff.kfwer.threshold <- function(W, k, alpha) {
     # NB(r,0.5) -> p(k) = (k + r - 1 choose k) * (1/2)^(k + r)
 
     for (v in 0:k) {
-      negative_binomial_cdf <- pnbinom(k, v, 0.5, lower.tail = FALSE)
+      negative_binomial_cdf <- stats::pnbinom(k, v, 0.5, lower.tail = FALSE)
       
       if (negative_binomial_cdf > alpha) break; # this v is too high and doesn't control the k-FWER at level alpha
     }
@@ -60,10 +57,7 @@ knockoff.kfwer.threshold <- function(W, k, alpha) {
 #' @param k Defines k-FWER
 #' @param alpha The desired control for the FWER.
 #' @returns The maximum of the threshold that controls the FDR and the threshold that controls the k-FWER
-#' @examples
-#' knockoff.heuristic.threshold(W, 0.1, 4, 0.05)
 #' @name knockoff.heuristic.threshold
-#' @export
 knockoff.heuristic.threshold <- function(W, q, k, alpha) {
     kfwer_threshold <- knockoff.kfwer.threshold(W, k, alpha)
 
