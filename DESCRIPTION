@@ -20,3 +20,5 @@ Imports:
     Rfast2,
     progress,
     presto
+Remotes:
+    immunogenomics/presto
