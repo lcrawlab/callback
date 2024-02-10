@@ -26,17 +26,19 @@ library(SeuratData)
 
 library(callback)
 
+pbmc3k <- UpdateSeuratObject(pbmc3k)
+
 # load pbmc3k dataset
 SeuratData::InstallData("pbmc3k", force.reinstall = TRUE)
 data("pbmc3k")
 
 
-pbmc <- NormalizeData(pbmc3k)
-pbmc <- FindVariableFeatures(pbmc3k)
-pbmc <- ScaleData(pbmc3k)
-pbmc <- RunPCA(pbmc3k)
-pbmc <- FindNeighbors(pbmc3k)
-pbmc <- RunUMAP(pbmc3k, dims = 1:10)
+pbmc3k <- NormalizeData(pbmc3k)
+pbmc3k <- FindVariableFeatures(pbmc3k)
+pbmc3k <- ScaleData(pbmc3k)
+pbmc3k <- RunPCA(pbmc3k)
+pbmc3k <- FindNeighbors(pbmc3k)
+pbmc3k <- RunUMAP(pbmc3k, dims = 1:10)
 
 pbmc_default <- FindClusters(pbmc3k)
 pbmc_callback <- FindClustersCallback(pbmc3k)
