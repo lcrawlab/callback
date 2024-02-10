@@ -1,5 +1,11 @@
 # callback (Calibrated Clustering via Knockoffs) <img src="man/figures/callback_logo.png" align="right" alt="" width="120"/>
 
+
+[![R CMD check](https://github.com/lcrawlab/PCKnockoffs/actions/workflows/check-standard.yml/badge.svg)](https://github.com/lcrawlab/PCKnockoffs/actions/workflows/check-standard.yml)
+
+[![Docker Image CI](https://github.com/lcrawlab/PCKnockoffs/actions/workflows/docker-image.yml/badge.svg)](https://github.com/lcrawlab/PCKnockoffs/actions/workflows/docker-image.yml)
+
+
 ## Introduction
 
 Analysis of single-cell RNA sequencing data frequently involves the detection of groups of similar cells via a clustering algorithm followed by differential gene expression analysis to detect marker genes that differ between those groups.
