@@ -48,13 +48,5 @@ DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 For questions or concerns with callback, please contact
 [Alan DenAdel](mailto:alan_denadel@brown.edu).
 
-## References
 
-If you use `callback` in your work, please cite the `callback` publication as follows:
-
-> **paper title**
->
-> Alan DenAdel and Lorin Crawford
->
->_journal_ data doi: []().
 
