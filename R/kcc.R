@@ -15,13 +15,13 @@
 #' @param algorithm The clustering algorithm to be used.
 #' @param assay The assay to generate knockoffs from.
 #' @param cores The number of cores to compute marker genes in parallel.
-#' @returns Returns a Seurat object where the idents have been updated with the clusters determined via the KCC algorithm. 
+#' @returns Returns a Seurat object where the idents have been updated with the clusters determined via the callback algorithm. 
 #' @param verbose Whether or not to show all logging.
-#' Latest clustering results will be stored in the object metadata under 'kcc_clusters'. 
-#' Note that 'kcc_clusters' will be overwritten every time FindClustersKC is run.
-#' @name FindClustersKCC
+#' Latest clustering results will be stored in the object metadata under 'callback_clusters'. 
+#' Note that 'callback_clusters' will be overwritten every time FindClustersKC is run.
+#' @name FindClustersCallback
 #' @export
-FindClustersKCC <- function(seurat_obj,
+FindClustersCallback <- function(seurat_obj,
                             resolution_start=0.8,
                             reduction_percentage=0.2,
                             num_clusters_start=20,
@@ -162,9 +162,9 @@ FindClustersKCC <- function(seurat_obj,
   }
 
 
-  seurat_obj@meta.data$kcc_clusters <- Seurat::Idents(knockoff_seurat_obj)
+  seurat_obj@meta.data$callback_clusters <- Seurat::Idents(knockoff_seurat_obj)
 
-  Seurat::Idents(seurat_obj) <- seurat_obj@meta.data$kcc_clusters
+  Seurat::Idents(seurat_obj) <- seurat_obj@meta.data$callback_clusters
 
   return(seurat_obj)
 }
