@@ -39,7 +39,7 @@ pbmc <- FindNeighbors(pbmc3k)
 pbmc <- RunUMAP(pbmc3k, dims = 1:10)
 
 pbmc_default <- FindClusters(pbmc3k)
-pbmc_callback <- FindClustersCallbackpbmc3k)
+pbmc_callback <- FindClustersCallback(pbmc3k)
 
 DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 ```
