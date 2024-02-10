@@ -1,9 +1,5 @@
 
 
-# todo do this properly
-source("/Users/alandenadel/Code/repos/PCKnockoffs/R/estimate_zipoisson.R")
-source("/Users/alandenadel/Code/repos/PCKnockoffs/R/kfwer.R")
-
 #' @title Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.
 #'
 #' @description Given a Seurat object, returns a new Seurat object whose RNA expression counts includes the 
