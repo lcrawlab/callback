@@ -29,7 +29,7 @@ library(callback)
 pbmc3k <- UpdateSeuratObject(pbmc3k)
 
 # load pbmc3k dataset
-SeuratData::InstallData("pbmc3k", force.reinstall = TRUE)
+SeuratData::InstallData("pbmc3k")
 data("pbmc3k")
 
 
