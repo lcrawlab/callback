@@ -175,3 +175,52 @@ FindClustersCallback <- function(seurat_obj,
 }
 
 
+
+
+
+
+#' @title Returns a Seurat object that contains additional (fake) RNA
+#' expression counts in the form of knockoffs.
+#'
+#' @description Given a Seurat object, returns a new Seurat object whose RNA
+#' expression counts includes the
+#' variable features from the original object and an equal number of knockoff
+#' features.
+#'
+#' @details
+#'
+#' @param seurat_obj A Seurat object containing RNA expression counts.
+#' @param assay The assay to generate knockoffs from.
+#' @returns A Seurat object that contains the original variable features and an
+#' equal number of knockoff features.
+#' @name get_seurat_obj_with_knockoffs
+get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA") {
+  var_features <- Seurat::VariableFeatures(seurat_obj)
+  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
+
+  #seurat_obj_data <- seurat_obj_data[var_features]
+
+  message("Pulling data from Seurat object")
+  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[Seurat::VariableFeatures(seurat_obj),])))
+  seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay = assay, slot = "counts")[Seurat::VariableFeatures(seurat_obj), ])))
+
+  message("Computing MLE for zero-inflated poisson")
+  ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
+
+  message("Computing knockoffs")
+  ko <- as.data.frame(lapply(ml_estimates,
+                             function(x) { rzipoisson(nrow(seurat_obj_data),
+                                                    x$lambda.hat,
+                                                    x$pi.hat)
+                             }))
+
+
+  num_variable_features <- length(var_features)
+  colnames(ko) <- paste0(rep("knockoff", num_variable_features), 1:num_variable_features)
+  combined_data <- cbind(seurat_obj_data, ko)
+
+  new_project_name <- paste0(seurat_obj@project.name, "_with_knockoffs")
+  new_seurat_obj <- Seurat::CreateSeuratObject(counts = t(combined_data), project = new_project_name)
+
+  return(new_seurat_obj)
+}
