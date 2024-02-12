@@ -111,9 +111,8 @@ FindClustersCallback <- function(seurat_obj,
 
     found_no_sign_diff <- FALSE
     
-    pb <- progress::progress_bar$new(clear = FALSE)
-
-
+    #pb <- progress::progress_bar$new(clear = FALSE)
+    cli::cli_progress_bar("Cleaning data", total = 100)
 
     m <- 0
     for (i in 1:length(knock_idents)) {
@@ -124,7 +123,8 @@ FindClustersCallback <- function(seurat_obj,
         
         m <- m + 1
         
-        pb$tick(100 * 1 / (length(knock_idents) * (length(knock_idents) - 1) / 2))
+        #pb$tick(100 * 1 / (length(knock_idents) * (length(knock_idents) - 1) / 2))
+        cli::cli_progress_update(100 * 1 / (length(knock_idents) * (length(knock_idents) - 1) / 2))
 
         if (verbose) {
           #message("Pair:")
@@ -149,6 +149,7 @@ FindClustersCallback <- function(seurat_obj,
       }
       if (found_no_sign_diff) {
         if (verbose) {
+          cli::cli_progress_done()
           message("Found clusters with no significant differences. Progressing to next clustering iteration.")
         }
         break
