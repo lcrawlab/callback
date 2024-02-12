@@ -906,7 +906,9 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
 
   }
 
-    ret <-  list("knockoff_seurat_obj"=knockoff_seurat_obj, "DEG_results"="", "num_selected_matrix"=num_selected_matrix)
+  ret <-  list("knockoff_seurat_obj" = knockoff_seurat_obj,
+               "DEG_results" = "",
+               "num_selected_matrix" = num_selected_matrix)
 
   return(ret)
 }
