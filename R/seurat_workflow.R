@@ -909,15 +909,3 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
 
   return(ret)
 }
-
-
-
-
-
-
-
-
-
-
-
-

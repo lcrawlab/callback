@@ -1,24 +1,29 @@
-
-
 #' @title Runs a typical Seurat workflow on a Seurat object (up to dimensionality reduction and clustering).
 #'
-#' @description Given a Seurat object, returns a new Seurat that has been normalized, had variable features identified,
-#' scaled, had principal components computed, had clusters identified, and had tSNE and UMAP embeddings determined.
+#' @description Given a Seurat object, returns a new Seurat that has been
+#' normalized, had variable features identified, scaled, had principal
+#' components computed, hadclusters identified, and had tSNE and UMAP
+#' embeddings determined.
 #'
 #' @details 
 #'
 #' @param seurat_obj The Seurat object that will be analyzed.
-#' @param resolution_start The starting resolution to be used for the clustering algorithm (Louvain and Leiden algorithms).
-#' @param num_clusters_start The starting number of clusters to be used for the clustering algorithm (K-means and Hierarchical clustering algorithms).
-#' @param reduction_percentage The amount that the starting parameter will be reduced by after each iteration (between 0 and 1).
+#' @param resolution_start The starting resolution to be used for the
+#' clustering algorithm (Louvain and Leiden algorithms).
+#' @param num_clusters_start The starting number of clusters to be used for the
+#' clustering algorithm (K-means and Hierarchical clustering algorithms).
+#' @param reduction_percentage The amount that the starting parameter will be
+#' reduced by after each iteration (between 0 and 1).
 #' @param dims The dimensions to use as input features (i.e. 1:10).
 #' @param algorithm The clustering algorithm to be used.
 #' @param assay The assay to generate knockoffs from.
 #' @param cores The number of cores to compute marker genes in parallel.
-#' @returns Returns a Seurat object where the idents have been updated with the clusters determined via the callback algorithm. 
+#' @returns Returns a Seurat object where the idents have been updated with the
+#' clusters determined via the callback algorithm. 
 #' @param verbose Whether or not to show all logging.
-#' Latest clustering results will be stored in the object metadata under 'callback_clusters'. 
-#' Note that 'callback_clusters' will be overwritten every time FindClustersKC is run.
+#' Latest clustering results will be stored in the object metadata under
+#' callback_clusters'. Note that 'callback_clusters' will be overwritten ever
+#' time FindClustersKC is run.
 #' @name FindClustersCallback
 #' @export
 FindClustersCallback <- function(seurat_obj,
