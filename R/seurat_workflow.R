@@ -23,10 +23,10 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay="RNA") {
 
   
   
-  message("Computing MLE for zero inflated poisson")
+  message("Computing MLE for zero-inflated poisson")
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
   
-  message("computing knockoffs")
+  message("Computing knockoffs")
   ko <- as.data.frame(lapply(ml_estimates, function(x) rzipoisson(nrow(seurat_obj_data), x$lambda.hat, x$pi.hat)))
   
 

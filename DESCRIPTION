@@ -19,6 +19,7 @@ Imports:
     stats,
     Rfast2,
     cli,
+    stringr,
     presto
 Remotes:
     immunogenomics/presto

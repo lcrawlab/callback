@@ -57,7 +57,7 @@ FindClustersCallback <- function(seurat_obj,
   all.genes <- rownames(knockoff_seurat_obj)
 
   knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj, verbose = FALSE)
-  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj, verbose = FALSE), verbose = FALSE)
+  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj), verbose = FALSE)
   knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj, dims = dims, verbose = FALSE) # todo check if i should use all dims for knockoffs
 
   resolution_param <- resolution_start
@@ -69,24 +69,15 @@ FindClustersCallback <- function(seurat_obj,
 
     if (verbose) {
       message("####################################################################")
-      message("Resolution param:")
-      message(resolution_param)
-
-
-      message("Finding clusters")
+      message(paste("Finding clusters with", stringr::str_to_title(algorithm), "algorithm"))
+      message(paste("Resolution param:", resolution_param))
     }
 
     if (algorithm == "louvain") {
-      if (verbose) {
-        message("Louvain")
-      }
       knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param, verbose = FALSE)
     }
 
     if (algorithm == "leiden") {
-      if (verbose) {
-        message("Leiden")
-      }
       #plan("sequential") # todo log number of cores being used # this is a weird one because leiden has a forked job hanging
       knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj,
                                                   resolution = resolution_param,
@@ -94,7 +85,6 @@ FindClustersCallback <- function(seurat_obj,
                                                   method = "igraph",
                                                   verbose = FALSE)
     }
-    message("Found clusters")
 
     # Reduce resolution for next iteration of the loop
     resolution_param <- (1 -reduction_percentage) * resolution_param
@@ -152,7 +142,7 @@ FindClustersCallback <- function(seurat_obj,
       if (found_no_sign_diff) {
         if (verbose) {
           cli::cli_progress_done()
-          message("Found clusters with no significant differences. Progressing to next clustering iteration.")
+          message("Found clusters with no significant differences.\nProgressing to next clustering iteration.")
         }
         break
       }
@@ -164,9 +154,7 @@ FindClustersCallback <- function(seurat_obj,
     break
   }
 
-
   seurat_obj@meta.data$callback_clusters <- Seurat::Idents(knockoff_seurat_obj)
-
   Seurat::Idents(seurat_obj) <- seurat_obj@meta.data$callback_clusters
 
   return(seurat_obj)
