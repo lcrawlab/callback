@@ -2,7 +2,8 @@
 % Please edit documentation in R/seurat_workflow.R
 \name{get_seurat_obj_with_knockoffs}
 \alias{get_seurat_obj_with_knockoffs}
-\title{Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.}
+\title{Returns a Seurat object that contains additional (fake) RNA
+expression counts in the form of knockoffs.}
 \usage{
 get_seurat_obj_with_knockoffs(seurat_obj, assay = "RNA")
 }
@@ -12,9 +13,12 @@ get_seurat_obj_with_knockoffs(seurat_obj, assay = "RNA")
 \item{assay}{The assay to generate knockoffs from.}
 }
 \value{
-A Seurat object that contains the original variable features and an equal number of knockoff features.
+A Seurat object that contains the original variable features and an
+equal number of knockoff features.
 }
 \description{
-Given a Seurat object, returns a new Seurat object whose RNA expression counts includes the
-variable features from the original object and an equal number of knockoff features.
+Given a Seurat object, returns a new Seurat object whose RNA
+expression counts includes the
+variable features from the original object and an equal number of knockoff
+features.
 }

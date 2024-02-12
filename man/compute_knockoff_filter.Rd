@@ -23,7 +23,8 @@ compute_knockoff_filter(
 
 \item{q}{The desired rate to control the FDR at}
 
-\item{return_all}{Determines if the returned object will contain all genes or just the selected genes.}
+\item{return_all}{Determines if the returned object will contain all genes
+or just the selected genes.}
 
 \item{threshold}{One of "fdr", "kfwer", or "heuristic".}
 
@@ -33,5 +34,6 @@ compute_knockoff_filter(
 The
 }
 \description{
-Given two Seurat objects, returns the  the genes selected by the knockoff filter and their W statistics.
+Given two Seurat objects, returns the  the genes selected by
+the knockoff filter and their W statistics.
 }
