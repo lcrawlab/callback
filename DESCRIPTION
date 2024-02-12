@@ -18,7 +18,7 @@ Imports:
     future,
     stats,
     Rfast2,
-    progress,
+    cli,
     presto
 Remotes:
     immunogenomics/presto
