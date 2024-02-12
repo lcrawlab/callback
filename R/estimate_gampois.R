@@ -10,6 +10,6 @@ estimate_gamma_poisson <- function(data, alpha, beta) {
 
 # https://en.wikipedia.org/wiki/Conjugate_prior#When_the_likelihood_function_is_a_discrete_distribution
 rgamma_poisson <- function(n, alpha, beta) {
-    return(rnbinom(n, size=alpha, prob = (beta / (1+beta))))
+    return(stats::rnbinom(n, size=alpha, prob = (beta / (1+beta))))
 
 }
