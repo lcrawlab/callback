@@ -416,7 +416,7 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
                                                                                    cores=1) {
   knockoff_seurat_obj <- get_seurat_obj_with_knockoffs(seurat_obj)
 
-  num_variable_features <- 2*length(Seurat::VariableFeatures(seurat_obj))
+  num_variable_features <- 2 * length(Seurat::VariableFeatures(seurat_obj))
 
 
   # Pre-process data
@@ -476,8 +476,8 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
           break
         }
 
-        num_selected_matrix[i,j] <- num.selected
-        num_selected_matrix[j,i] <- num.selected
+        num_selected_matrix[i, j] <- num.selected
+        num_selected_matrix[j, i] <- num.selected
 
       }
       if (found_no_sign_diff) {
@@ -502,7 +502,9 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
 
   }
 
-    ret <-  list("knockoff_seurat_obj"=knockoff_seurat_obj, "DEG_results"="", "num_selected_matrix"=num_selected_matrix)
+    ret <-  list("knockoff_seurat_obj" = knockoff_seurat_obj,
+                 "DEG_results" = "",
+                 "num_selected_matrix" = num_selected_matrix)
 
   return(ret)
 
@@ -511,17 +513,19 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
 
 cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
                                                                    starting_num_clusters,
-                                                                   num_dims=10,
-                                                                   cores=1) {
+                                                                   num_dims = 10,
+                                                                   cores = 1) {
   knockoff_seurat_obj <- get_seurat_obj_with_knockoffs(seurat_obj)
 
-  num_variable_features <- 2*length(Seurat::VariableFeatures(seurat_obj))
+  num_variable_features <- 2 * length(Seurat::VariableFeatures(seurat_obj))
 
 
   # Pre-process data
   knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj)
 
-  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj,
+                                                      selection.method = "vst",
+                                                      nfeatures = num_variable_features)
 
   all.genes <- rownames(knockoff_seurat_obj)
   knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj)
@@ -543,11 +547,11 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
 
     knock_idents <- 1:k
 
-    num_selected_matrix <- matrix(nrow=k, ncol=k)
+    num_selected_matrix <- matrix(nrow = k, ncol = k)
 
     found_no_sign_diff <- FALSE
 
-    Seurat::Idents(knockoff_seurat_obj) <- stats::kmeans(knockoff_seurat_obj@reductions$pca@cell.embeddings[,1:num_dims],k, iter.max = 20, nstart = 10)
+    Seurat::Idents(knockoff_seurat_obj) <- stats::kmeans(knockoff_seurat_obj@reductions$pca@cell.embeddings[`1:num_dims], k, iter.max = 20, nstart = 10)
 
     m <- 0
     for (i in 1:length(knock_idents)) {
@@ -559,7 +563,7 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
         m <- m + 1
 
         print("Pair:")
-        print(paste(i,j))
+        print(paste(i, j))
 
         print("Knockoff Pair:")
         print(paste(knock_idents[i], knock_idents[j]))
@@ -573,8 +577,8 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
           break
         }
 
-        num_selected_matrix[i,j] <- num.selected
-        num_selected_matrix[j,i] <- num.selected
+        num_selected_matrix[i, j] <- num.selected
+        num_selected_matrix[j, i] <- num.selected
 
       }
       if (found_no_sign_diff) {
@@ -599,7 +603,9 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
 
   }
 
-    ret <-  list("knockoff_seurat_obj"=knockoff_seurat_obj, "DEG_results"="", "num_selected_matrix"=num_selected_matrix)
+    ret <-  list("knockoff_seurat_obj" = knockoff_seurat_obj,
+                 "DEG_results" = "",
+                 "num_selected_matrix" = num_selected_matrix)
 
   return(ret)
 
@@ -613,9 +619,9 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
                                                            resolution_param_start,
                                                            resolution_param_decrement,
                                                            visualization_method,
-                                                           num_dims=10,
-                                                           algorithm="louvain",
-                                                           cores=1) {
+                                                           num_dims = 10,
+                                                           algorithm = "louvain",
+                                                           cores = 1) {
   
   # bump up starting point by the decrement because we subtract the decrement in the loop
   resolution_param <- resolution_param_start + resolution_param_decrement
@@ -623,7 +629,7 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
 
   knockoff_seurat_obj <- get_seurat_obj_with_knockoffs(seurat_obj)
 
-  num_variable_features <- 2*length(Seurat::VariableFeatures(seurat_obj))
+  num_variable_features <- 2 * length(Seurat::VariableFeatures(seurat_obj))
 
 
   # Pre-process data
@@ -634,19 +640,22 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
 
   knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj)
 
-  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj,
+                                                      selection.method = "vst",
+                                                      nfeatures = num_variable_features)
 
   all.genes <- rownames(knockoff_seurat_obj)
 
   knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj)
 
-  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj))
+  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj,
+                                        features = Seurat::VariableFeatures(object = knockoff_seurat_obj))
 
-  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj, dims = 1:num_dims) # todo check if i should use all dims for knockoffs
+  # todo check if i should use all dims for knockoffs
+  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj,
+                                               dims = 1:num_dims)
 
   while(TRUE) {
-
-
     #resolution_param <- resolution_param - resolution_param_decrement
 
     resolution_param <- 0.8 * resolution_param
@@ -667,7 +676,10 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
     if (algorithm == "leiden") {
       print("Leiden")
       #plan("sequential") # todo log number of cores being used # this is a weird one because leiden has a forked job hanging
-      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param, algorithm=4, method = "igraph")
+      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj,
+                                                  resolution = resolution_param,
+                                                  algorithm = 4,
+                                                  method = "igraph")
     }
         print("Found clusters")
 
@@ -694,12 +706,16 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
         m <- m + 1
 
         print("Pair:")
-        print(paste(i,j))
+        print(paste(i, j))
 
         print("Knockoff Pair:")
         print(paste(knock_idents[i], knock_idents[j]))
 
-        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, knock_idents[i], knock_idents[j], 0.05, num_cores=cores)
+        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj,
+                                                    knock_idents[i],
+                                                    knock_idents[j],
+                                                    0.05,
+                                                    num_cores = cores)
 
         num.selected <- nrow(markers.selected$selected_features)
 
@@ -708,8 +724,8 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
           break
         }
 
-        num_selected_matrix[i,j] <- num.selected
-        num_selected_matrix[j,i] <- num.selected
+        num_selected_matrix[i, j] <- num.selected
+        num_selected_matrix[j, i] <- num.selected
 
       }
       if (found_no_sign_diff) {
@@ -726,7 +742,9 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
 
   }
 
-  ret <-  list("knockoff_seurat_obj"=knockoff_seurat_obj, "DEG_results"="", "num_selected_matrix"=num_selected_matrix)
+  ret <-  list("knockoff_seurat_obj" = knockoff_seurat_obj,
+               "DEG_results" = "",
+               "num_selected_matrix" = num_selected_matrix)
 
   return(ret)
 }
@@ -746,7 +764,7 @@ get_cluster_centroid <- function(seurat_obj, num_PCs, cluster_ident) {
 get_cluster_centroid_distance_matrix <- function(seurat_obj, num_PCs) {
   cluster_names <- levels(Seurat::Idents(seurat_obj))
 
-  centroids <- lapply(cluster_names, FUN =function(cluster_name) { get_cluster_centroid(seurat_obj, num_PCs, cluster_name) })
+  centroids <- lapply(cluster_names, FUN = function(cluster_name) { get_cluster_centroid(seurat_obj, num_PCs, cluster_name) })
 
   centroid.df <- t(as.data.frame(centroids))
   rownames(centroid.df) <- cluster_names
@@ -786,7 +804,7 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
 
   knockoff_seurat_obj <- get_seurat_obj_with_knockoffs(seurat_obj)
 
-  num_variable_features <- 2*length(Seurat::VariableFeatures(seurat_obj))
+  num_variable_features <- 2 * length(Seurat::VariableFeatures(seurat_obj))
 
 
   # Pre-process data
@@ -869,7 +887,7 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
       markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, i, j, 0.05)
 
       num.selected <- nrow(markers.selected$selected_features)
-        
+
       if (num.selected == 0) {
         found_no_sign_diff <- TRUE
         print("Found clusters with no significant differences. Progressing to next clustering iteration.")
@@ -877,17 +895,14 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
         break
       }
 
-      num_selected_matrix[i,j] <- num.selected
-      num_selected_matrix[j,i] <- num.selected
+      num_selected_matrix[i, j] <- num.selected
+      num_selected_matrix[j, i] <- num.selected
     }
 
-
-    
     if (found_no_sign_diff) {
       next
     }
     break
-
 
   }
 
