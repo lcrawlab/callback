@@ -47,16 +47,18 @@ FindClustersCallback <- function(seurat_obj,
   #options(future.globals.maxSize = 8000 * 1024^2)
   #plan("multicore", workers = as.numeric(cores)) # todo log number of cores being used
 
-  knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj)
+  knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj, verbose = FALSE)
    
-  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj,
+                                                      selection.method = "vst",
+                                                      nfeatures = num_variable_features,
+                                                      verbose = FALSE)
     
   all.genes <- rownames(knockoff_seurat_obj)
-    
 
-  knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj)
-  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj))
-  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj, dims = dims) # todo check if i should use all dims for knockoffs
+  knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj, verbose = FALSE)
+  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj, verbose = FALSE), verbose = FALSE)
+  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj, dims = dims, verbose = FALSE) # todo check if i should use all dims for knockoffs
 
   resolution_param <- resolution_start
 
@@ -69,7 +71,6 @@ FindClustersCallback <- function(seurat_obj,
       message("####################################################################")
       message("Resolution param:")
       message(resolution_param)
-      message("####################################################################")
 
 
       message("Finding clusters")
@@ -79,7 +80,7 @@ FindClustersCallback <- function(seurat_obj,
       if (verbose) {
         message("Louvain")
       }
-      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param)
+      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param, verbose = FALSE)
     }
 
     if (algorithm == "leiden") {
@@ -87,7 +88,11 @@ FindClustersCallback <- function(seurat_obj,
         message("Leiden")
       }
       #plan("sequential") # todo log number of cores being used # this is a weird one because leiden has a forked job hanging
-      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param, algorithm=4, method = "igraph")
+      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj,
+                                                  resolution = resolution_param,
+                                                  algorithm=4,
+                                                  method = "igraph",
+                                                  verbose = FALSE)
     }
     message("Found clusters")
 
@@ -111,8 +116,12 @@ FindClustersCallback <- function(seurat_obj,
 
     found_no_sign_diff <- FALSE
     
-    #pb <- progress::progress_bar$new(clear = FALSE)
-    cli::cli_progress_bar("Cleaning data", total = 100)
+
+    if (verbose) {
+      cli::cli_progress_bar("Processing cluster pairs:",
+                            total = (length(knock_idents) * (length(knock_idents) - 1) / 2),
+                            clear = FALSE)
+    }
 
     m <- 0
     for (i in 1:length(knock_idents)) {
@@ -123,15 +132,8 @@ FindClustersCallback <- function(seurat_obj,
         
         m <- m + 1
         
-        #pb$tick(100 * 1 / (length(knock_idents) * (length(knock_idents) - 1) / 2))
-        cli::cli_progress_update(100 * 1 / (length(knock_idents) * (length(knock_idents) - 1) / 2))
-
         if (verbose) {
-          #message("Pair:")
-          #message(paste(i,j))
-          
-          #message("Knockoff Pair:")
-          #message(paste(knock_idents[i], knock_idents[j]))
+          cli::cli_progress_update()
         }
         
         markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, knock_idents[i], knock_idents[j], 0.05, num_cores=cores)

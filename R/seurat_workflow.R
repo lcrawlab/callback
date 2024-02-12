@@ -17,16 +17,16 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay="RNA") {
   
   #seurat_obj_data <- seurat_obj_data[var.features]
 
-  print("Pulling data from Seurat object")
+  message("Pulling data from Seurat object")
   #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[Seurat::VariableFeatures(seurat_obj),])))
   seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay=assay, slot='counts')[Seurat::VariableFeatures(seurat_obj),])))
 
   
   
-  print("Computing MLE for zero inflated poisson")
+  message("Computing MLE for zero inflated poisson")
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
   
-  print("computing knockoffs")
+  message("computing knockoffs")
   ko <- as.data.frame(lapply(ml_estimates, function(x) rzipoisson(nrow(seurat_obj_data), x$lambda.hat, x$pi.hat)))
   
 
@@ -140,12 +140,7 @@ seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=
 if (visualization_method == "both") {
     seurat_obj <- Seurat::RunUMAP(seurat_obj, dims = 1:num_dims)
     seurat_obj <- Seurat::RunTSNE(seurat_obj, dims = 1:num_dims)
-  }
-  
-  
-  # todo differential expression
-  
-  
+  } 
   
   return(seurat_obj)
 }
