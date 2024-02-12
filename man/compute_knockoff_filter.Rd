@@ -31,7 +31,7 @@ or just the selected genes.}
 \item{num_cores}{The number of cores for computing marker genes in parallel.}
 }
 \value{
-The
+todo
 }
 \description{
 Given two Seurat objects, returns the  the genes selected by
