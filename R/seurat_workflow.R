@@ -551,7 +551,7 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
 
     found_no_sign_diff <- FALSE
 
-    Seurat::Idents(knockoff_seurat_obj) <- stats::kmeans(knockoff_seurat_obj@reductions$pca@cell.embeddings[`1:num_dims], k, iter.max = 20, nstart = 10)
+    Seurat::Idents(knockoff_seurat_obj) <- stats::kmeans(knockoff_seurat_obj@reductions$pca@cell.embeddings[1:num_dims], k, iter.max = 20, nstart = 10)
 
     m <- 0
     for (i in 1:length(knock_idents)) {
