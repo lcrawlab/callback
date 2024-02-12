@@ -11,7 +11,7 @@
 #' @param assay The assay to generate knockoffs from.
 #' @returns A Seurat object that contains the original variable features and an equal number of knockoff features.
 #' @name get_seurat_obj_with_knockoffs
-get_seurat_obj_with_knockoffs <- function(seurat_obj, assay="RNA") {
+get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA") {
   var.features <- Seurat::VariableFeatures(seurat_obj)
   #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
   
@@ -47,9 +47,9 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay="RNA") {
 cluster_optimal_louvain_resolution_parameter <- function(seurat_obj,
                                                          original_num_clusters,
                                                          num_variable_features,
-                                                         res_start=0.1,
-                                                         res_end=3,
-                                                         res_increment=0.05) {
+                                                         res_start = 0.1,
+                                                         res_end = 3,
+                                                         res_increment = 0.05) {
 
   # todo make this more efficient
   # todo move this function into  flow so that it happens automatically and doesn't repeat computation
@@ -108,7 +108,12 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj,
 #' @returns A Seurat object containing the relevant analysis results.
 #' @export
 #' @name seurat_workflow
-seurat_workflow <- function(seurat_obj, num_variable_features, resolution_param=0.5, visualization_method="umap", num_dims=10, algorithm="louvain") {
+seurat_workflow <- function(seurat_obj,
+                            num_variable_features,
+                            resolution_param = 0.5,
+                            visualization_method = "umap",
+                            num_dims = 10,
+                            algorithm = "louvain") {
   seurat_obj <- Seurat::NormalizeData(seurat_obj)
    
   seurat_obj <- Seurat::FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)

@@ -1,4 +1,4 @@
-#' @title Runs a typical Seurat workflow on a Seurat object (up to 
+#' @title Runs a typical Seurat workflow on a Seurat object (up to
 #' dimensionality reduction and clustering).
 #'
 #' @description Given a Seurat object, returns a new Seurat that has been
@@ -6,7 +6,7 @@
 #' components computed, hadclusters identified, and had tSNE and UMAP
 #' embeddings determined.
 #'
-#' @details 
+#' @details
 #'
 #' @param seurat_obj The Seurat object that will be analyzed.
 #' @param resolution_start The starting resolution to be used for the
@@ -20,7 +20,7 @@
 #' @param assay The assay to generate knockoffs from.
 #' @param cores The number of cores to compute marker genes in parallel.
 #' @returns Returns a Seurat object where the idents have been updated with the
-#' clusters determined via the callback algorithm. 
+#' clusters determined via the callback algorithm.
 #' @param verbose Whether or not to show all logging.
 #' Latest clustering results will be stored in the object metadata under
 #' callback_clusters'. Note that 'callback_clusters' will be overwritten ever
@@ -28,14 +28,14 @@
 #' @name FindClustersCallback
 #' @export
 FindClustersCallback <- function(seurat_obj,
-                            resolution_start=0.8,
-                            reduction_percentage=0.2,
-                            num_clusters_start=20,
-                            dims=1:10,
-                            algorithm="louvain", # todo implement all algos
-                            assay="RNA",
-                            cores=1,
-                            verbose=TRUE) {
+                            resolution_start = 0.8,
+                            reduction_percentage = 0.2,
+                            num_clusters_start = 20,
+                            dims = 1:10,
+                            algorithm = "louvain", # todo implement all algos
+                            assay = "RNA",
+                            cores = 1,
+                            verbose = TRUE) {
 
   # todo check function arguments for validity
   
