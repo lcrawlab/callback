@@ -2,7 +2,8 @@
 % Please edit documentation in R/seurat_workflow.R
 \name{compare_Seurat_clusterings}
 \alias{compare_Seurat_clusterings}
-\title{Returns the adjusted Rand index for the active identities in two Seurat objects}
+\title{Returns the adjusted Rand index for the active identities in two
+Seurat objects}
 \usage{
 compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 }
@@ -12,9 +13,11 @@ compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 \item{seurat_obj2}{A Seurat object}
 }
 \value{
-The adjusted Rand index for the active identities of each of the objects.
+The adjusted Rand index for the active identities of each of the
+objects.
 compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 }
 \description{
-Given two Seurat objects, returns the adjusted Rand index for the active identities of each of the objects.
+Given two Seurat objects, returns the adjusted Rand index for
+the active identities of each of the objects.
 }

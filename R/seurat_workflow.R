@@ -2,7 +2,7 @@
 
 #' @title Returns a Seurat object that contains additional (fake) RNA expression counts in the form of knockoffs.
 #'
-#' @description Given a Seurat object, returns a new Seurat object whose RNA expression counts includes the 
+#' @description Given a Seurat object, returns a new Seurat object whose RNA expression counts includes the
 #' variable features from the original object and an equal number of knockoff features.
 #'
 #' @details 
@@ -19,24 +19,25 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA") {
 
   message("Pulling data from Seurat object")
   #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[Seurat::VariableFeatures(seurat_obj),])))
-  seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay=assay, slot='counts')[Seurat::VariableFeatures(seurat_obj),])))
+  seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay = assay, slot = "counts")[Seurat::VariableFeatures(seurat_obj), ])))
 
-  
-  
   message("Computing MLE for zero-inflated poisson")
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
-  
+
   message("Computing knockoffs")
-  ko <- as.data.frame(lapply(ml_estimates, function(x) rzipoisson(nrow(seurat_obj_data), x$lambda.hat, x$pi.hat)))
-  
+  ko <- as.data.frame(lapply(ml_estimates,
+                             function(x) rzipoisson(nrow(seurat_obj_data),
+                                                    x$lambda.hat,
+                                                    x$pi.hat)))
+
 
   num_variable_features <- length(var.features)
-  colnames(ko) <- paste0(rep('knockoff', num_variable_features), 1:num_variable_features)
+  colnames(ko) <- paste0(rep("knockoff", num_variable_features), 1:num_variable_features)
   combined.data <- cbind(seurat_obj_data, ko)
-  
+
   new_project_name <- paste0(seurat_obj@project.name, "_with_knockoffs")
   new_seurat_obj <- Seurat::CreateSeuratObject(counts = t(combined.data), project = new_project_name)
-  
+
   return(new_seurat_obj)
 }
 
@@ -67,11 +68,14 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj,
   
   new_seurat_obj <- Seurat::ScaleData(new_seurat_obj, features = all.genes)
   
-  new_seurat_obj <- Seurat::RunPCA(new_seurat_obj, features = Seurat::VariableFeatures(object = new_seurat_obj))
-  new_seurat_obj <- Seurat::FindNeighbors(new_seurat_obj, dims = 1:10) # todo check num dims
+  new_seurat_obj <- Seurat::RunPCA(new_seurat_obj,
+                                   features = Seurat::VariableFeatures(object = new_seurat_obj))
+  # todo check num dims
+  new_seurat_obj <- Seurat::FindNeighbors(new_seurat_obj, dims = 1:10)
 
   for (resolution_param in resolution_params) {
-    new_seurat_obj <- Seurat::FindClusters(new_seurat_obj, resolution = resolution_param)
+    new_seurat_obj <- Seurat::FindClusters(new_seurat_obj,
+                                           resolution = resolution_param)
 
     print("Original num clusters")
     print(original_num_clusters)
@@ -92,19 +96,24 @@ cluster_optimal_louvain_resolution_parameter <- function(seurat_obj,
 }
 
 
-#' @title Runs a typical Seurat workflow on a Seurat object (up to dimensionality reduction and clustering).
+#' @title Runs a typical Seurat workflow on a Seurat object (up to
+#' dimensionality reduction and clustering).
 #'
-#' @description Given a Seurat object, returns a new Seurat that has been normalized, had variable features identified,
-#' scaled, had principal components computed, had clusters identified, and had tSNE and UMAP embeddings determined.
+#' @description Given a Seurat object, returns a new Seurat that has been
+#' normalized, had variable features identified,
+#' scaled, had principal components computed, had clusters identified, and had
+#' tSNE and UMAP embeddings determined.
 #'
 #' @details 
 #'
 #' @param seurat_obj A Seurat object that will be analyzed.
-#' @param num_variable_features The number of variable features to use in the analysis.
+#' @param num_variable_features The number of variable features to use in the
+#' analysis.
 #' @param resolution_param The resolution parameter to use when clustering.
 #' @param visualization_method Either "umap" or "tsne".
 #' @param num_dims The number of principal components to use.
-#' @param algorithm The clustering algorithm to use, either "louvain" or "leiden".
+#' @param algorithm The clustering algorithm to use, either "louvain" or
+#' "leiden".
 #' @returns A Seurat object containing the relevant analysis results.
 #' @export
 #' @name seurat_workflow
@@ -116,23 +125,30 @@ seurat_workflow <- function(seurat_obj,
                             algorithm = "louvain") {
   seurat_obj <- Seurat::NormalizeData(seurat_obj)
    
-  seurat_obj <- Seurat::FindVariableFeatures(seurat_obj, selection.method = "vst", nfeatures = num_variable_features)
+  seurat_obj <- Seurat::FindVariableFeatures(seurat_obj,
+                                             selection.method = "vst",
+                                             nfeatures = num_variable_features)
     
   all.genes <- rownames(seurat_obj)
     
   #seurat_obj <- Seurat::ScaleData(seurat_obj, features = all.genes)
   seurat_obj <- Seurat::ScaleData(seurat_obj)
     
-  seurat_obj <- Seurat::RunPCA(seurat_obj, features = Seurat::VariableFeatures(object = seurat_obj))
-    
-  seurat_obj <- Seurat::FindNeighbors(seurat_obj, dims = 1:num_dims) # todo check if i should use all dims for knockoffs
+  seurat_obj <- Seurat::RunPCA(seurat_obj,
+                               features = Seurat::VariableFeatures(object = seurat_obj))
+
+  # todo check if i should use all dims for knockoffs
+  seurat_obj <- Seurat::FindNeighbors(seurat_obj, dims = 1:num_dims)
 
   if (algorithm == "louvain") {
     seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = resolution_param)
   }
 
   if (algorithm == "leiden") {
-    seurat_obj <- Seurat::FindClusters(seurat_obj, resolution = resolution_param, algorithm=4, method = "igraph")
+    seurat_obj <- Seurat::FindClusters(seurat_obj,
+                                       resolution = resolution_param,
+                                       algorithm=4,
+                                       method = "igraph")
   }
 
   if (visualization_method == "umap") {
@@ -151,14 +167,17 @@ if (visualization_method == "both") {
 }
 
 
-#' @title Returns the adjusted Rand index for the active identities in two Seurat objects
+#' @title Returns the adjusted Rand index for the active identities in two
+#' Seurat objects
 #'
-#' @description Given two Seurat objects, returns the adjusted Rand index for the active identities of each of the objects.
+#' @description Given two Seurat objects, returns the adjusted Rand index for
+#' the active identities of each of the objects.
 #' @details 
 #'
 #' @param seurat_obj1 A Seurat object 
 #' @param seurat_obj2 A Seurat object
-#' @returns The adjusted Rand index for the active identities of each of the objects.
+#' @returns The adjusted Rand index for the active identities of each of the
+#' objects.
 #' compare_Seurat_clusterings(seurat_obj1, seurat_obj2)
 #' @name compare_Seurat_clusterings
 compare_Seurat_clusterings <- function(seurat_obj1, seurat_obj2) {
