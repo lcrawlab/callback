@@ -1,4 +1,5 @@
-#' @title Runs a typical Seurat workflow on a Seurat object (up to dimensionality reduction and clustering).
+#' @title Runs a typical Seurat workflow on a Seurat object (up to 
+#' dimensionality reduction and clustering).
 #'
 #' @description Given a Seurat object, returns a new Seurat that has been
 #' normalized, had variable features identified, scaled, had principal
@@ -31,7 +32,7 @@ FindClustersCallback <- function(seurat_obj,
                             reduction_percentage=0.2,
                             num_clusters_start=20,
                             dims=1:10,
-                            algorithm="louvain", # todo implement all algorithms in one function
+                            algorithm="louvain", # todo implement all algos
                             assay="RNA",
                             cores=1,
                             verbose=TRUE) {
@@ -48,11 +49,14 @@ FindClustersCallback <- function(seurat_obj,
 
   #library(future)
   options(future.globals.maxSize = 8000 * 1024^2)
-  future::plan("multicore", workers = as.numeric(cores)) # todo log number of cores being used
+  # todo log number of cores being used
+  future::plan("multicore", workers = as.numeric(cores))
   #options(future.globals.maxSize = 8000 * 1024^2)
-  #plan("multicore", workers = as.numeric(cores)) # todo log number of cores being used
+  # todo log number of cores being used
+  #plan("multicore", workers = as.numeric(cores))
 
-  knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj, verbose = FALSE)
+  knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj,
+                                               verbose = FALSE)
    
   knockoff_seurat_obj <- Seurat::FindVariableFeatures(knockoff_seurat_obj,
                                                       selection.method = "vst",
@@ -62,16 +66,17 @@ FindClustersCallback <- function(seurat_obj,
   all.genes <- rownames(knockoff_seurat_obj)
 
   knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj, verbose = FALSE)
-  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj, features = Seurat::VariableFeatures(object = knockoff_seurat_obj), verbose = FALSE)
-  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj, dims = dims, verbose = FALSE) # todo check if i should use all dims for knockoffs
+  knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj,
+                                        features = Seurat::VariableFeatures(object = knockoff_seurat_obj),
+                                        verbose = FALSE)
+  # todo check if i should use all dims for knockoffs
+  knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj,
+                                               dims = dims,
+                                               verbose = FALSE)
 
   resolution_param <- resolution_start
 
   while(TRUE) {
-
-
-
-
     if (verbose) {
       message("####################################################################")
       message(paste("Finding clusters with", stringr::str_to_title(algorithm), "algorithm"))
@@ -79,7 +84,9 @@ FindClustersCallback <- function(seurat_obj,
     }
 
     if (algorithm == "louvain") {
-      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj, resolution = resolution_param, verbose = FALSE)
+      knockoff_seurat_obj <- Seurat::FindClusters(knockoff_seurat_obj,
+                                                  resolution = resolution_param,
+                                                  verbose = FALSE)
     }
 
     if (algorithm == "leiden") {
@@ -93,8 +100,6 @@ FindClustersCallback <- function(seurat_obj,
 
     # Reduce resolution for next iteration of the loop
     resolution_param <- (1 -reduction_percentage) * resolution_param
-
-
 
     k <- length(levels(Seurat::Idents(knockoff_seurat_obj)))
     #knock_idents <- 0:(k-1)
@@ -131,7 +136,11 @@ FindClustersCallback <- function(seurat_obj,
           cli::cli_progress_update()
         }
         
-        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, knock_idents[i], knock_idents[j], 0.05, num_cores=cores)
+        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj,
+                                                    knock_idents[i],
+                                                    knock_idents[j],
+                                                    0.05, # todo add var names?
+                                                    num_cores=cores)
         
         num.selected <- nrow(markers.selected$selected_features)
         
