@@ -6,7 +6,7 @@
 #' variable features from the original object and an equal number of knockoff
 #' features.
 #'
-#' @details 
+#' @details
 #'
 #' @param seurat_obj A Seurat object containing RNA expression counts.
 #' @param assay The assay to generate knockoffs from.
@@ -149,7 +149,7 @@ seurat_workflow <- function(seurat_obj,
   if (algorithm == "leiden") {
     seurat_obj <- Seurat::FindClusters(seurat_obj,
                                        resolution = resolution_param,
-                                       algorithm=4,
+                                       algorithm = 4,
                                        method = "igraph")
   }
 
@@ -227,7 +227,7 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
 
   W <- log_original_p_values - log_knockoff_p_values
 
-  thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
+  thres = knockoff::knockoff.threshold(W, fdr = q, offset = 1)
 
   print(paste("threshold", thres))
 
@@ -260,7 +260,13 @@ compute_knockoff_filter_one_cluster <- function(seurat_obj, cluster, q) {
 #' @param num_cores The number of cores for computing marker genes in parallel.
 #' @returns The 
 #' @name compute_knockoff_filter
-compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_all=FALSE, threshold="fdr", num_cores=1) {
+compute_knockoff_filter <- function(seurat_obj,
+                                    cluster1,
+                                    cluster2,
+                                    q,
+                                    return_all = FALSE,
+                                    threshold = "fdr",
+                                    num_cores = 1) {
   #library(future)
   options(future.globals.maxSize = 8000 * 1024^2) # todo note what this is for, figure this out as a parameter or programmatically
   future::plan("multicore", workers = as.numeric(num_cores)) # todo log number of cores being used
@@ -301,7 +307,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   W <- log_original_p_values - log_knockoff_p_values
 
   if (threshold == "fdr") {
-    thres = knockoff::knockoff.threshold(W, fdr=q, offset=1)
+    thres = knockoff::knockoff.threshold(W, fdr = q , offset = 1)
   }
 
   if (threshold == "kfwer") {
@@ -321,7 +327,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
   if (return_all) {
     all_features <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
 
-    ret <-  list("all_features"=all_features, "threshold"=thres)
+    ret <-  list("all_features" = all_features, "threshold" = thres)
 
     return(ret)
   }
@@ -338,7 +344,7 @@ compute_knockoff_filter <- function(seurat_obj, cluster1, cluster2, q, return_al
 
   selected_features <- selected_features[order(selected_features$W, decreasing = TRUE),]
 
-  ret <-  list("selected_features"=selected_features, "threshold"=thres)
+  ret <-  list("selected_features" = selected_features, "threshold" = thres)
 
   return(ret)
 }
@@ -400,7 +406,7 @@ FindMarkersWithKnockoffs <- function(seurat_obj, ident.1, ident.2, q, num_var_fe
 jaccard <- function(a, b) {
   intersection = length(intersect(a, b))
   union = length(a) + length(b) - intersection
-  return (intersection/union)
+  return (intersection / union)
 }
 
 #' @name compare_markers_jaccard
@@ -440,8 +446,8 @@ compare_markers_jaccard <- function(orig_seurat_obj, knock_seurat_obj, q,
 
 cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- function(seurat_obj,
                                                                                    starting_num_clusters,
-                                                                                   num_dims=10,
-                                                                                   cores=1) {
+                                                                                   num_dims = 10,
+                                                                                   cores = 1) {
   knockoff_seurat_obj <- get_seurat_obj_with_knockoffs(seurat_obj)
 
   num_variable_features <- 2 * length(Seurat::VariableFeatures(seurat_obj))
@@ -474,7 +480,7 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
 
     knock_idents <- 1:k
 
-    num_selected_matrix <- matrix(nrow=k, ncol=k)
+    num_selected_matrix <- matrix(nrow = k, ncol = k)
 
     found_no_sign_diff <- FALSE
 
@@ -495,7 +501,11 @@ cluster_seurat_heuristically_find_num_clusters_hierarchical_clustering <- functi
         print("Knockoff Pair:")
         print(paste(knock_idents[i], knock_idents[j]))
 
-        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, knock_idents[i], knock_idents[j], 0.05, num_cores=cores)
+        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj,
+                                                    knock_idents[i],
+                                                    knock_idents[j],
+                                                    0.05,
+                                                    num_cores = cores)
 
         num.selected <- nrow(markers.selected$selected_features)
 
@@ -596,7 +606,11 @@ cluster_seurat_heuristically_find_num_clusters_k_means <- function(seurat_obj,
         print("Knockoff Pair:")
         print(paste(knock_idents[i], knock_idents[j]))
 
-        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj, knock_idents[i], knock_idents[j], 0.05, num_cores=cores)
+        markers.selected <- compute_knockoff_filter(knockoff_seurat_obj,
+                                                    knock_idents[i],
+                                                    knock_idents[j],
+                                                    0.05,
+                                                    num_cores = cores)
 
         num.selected <- nrow(markers.selected$selected_features)
 
@@ -720,7 +734,7 @@ cluster_seurat_heuristically_find_num_clusters <- function(seurat_obj,
     knock_idents <- levels(Seurat::Idents(knockoff_seurat_obj))
 
 
-    num_selected_matrix <- matrix(nrow=k, ncol=k)
+    num_selected_matrix <- matrix(nrow = k, ncol = k)
 
     found_no_sign_diff <- FALSE
 
@@ -827,7 +841,7 @@ cluster_seurat_heuristically_find_num_clusters_sorted <- function(seurat_obj,
                                                            resolution_param_start,
                                                            resolution_param_decrement,
                                                            visualization_method,
-                                                           num_dims=10) {
+                                                           num_dims = 10) {
   
   # bump up starting point by the decrement because we subtract the decrement
   # in the loop
