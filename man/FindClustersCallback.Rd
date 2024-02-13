@@ -37,14 +37,14 @@ clustering algorithm (K-means and Hierarchical clustering algorithms).}
 
 \item{cores}{The number of cores to compute marker genes in parallel.}
 
-\item{verbose}{Whether or not to show all logging.
-Latest clustering results will be stored in the object metadata under
-callback_clusters'. Note that 'callback_clusters' will be overwritten ever
-time FindClustersKC is run.}
+\item{verbose}{Whether or not to show all logging.}
 }
 \value{
 Returns a Seurat object where the idents have been updated with the
 clusters determined via the callback algorithm.
+Latest clustering results will be stored in the object metadata under
+callback_clusters'. Note that 'callback_clusters' will be overwritten ever
+time FindClustersKC is run.
 }
 \description{
 Given a Seurat object, returns a new Seurat that has been

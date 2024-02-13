@@ -13,6 +13,8 @@ get_seurat_obj_with_knockoffs(seurat_obj, assay = "RNA")
 \item{seurat_obj}{A Seurat object containing RNA expression counts.}
 
 \item{assay}{The assay to generate knockoffs from.}
+
+\item{verbose}{Whether or not to show logging.}
 }
 \value{
 A Seurat object that contains the original variable features and an
