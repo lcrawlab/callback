@@ -238,8 +238,3 @@ FindClustersCallback <- function(seurat_obj,
 
   return(seurat_obj)
 }
-
-
-
-
-
