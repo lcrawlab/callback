@@ -124,8 +124,6 @@ FindClustersCallback <- function(seurat_obj,
                                                       selection.method = "vst",
                                                       nfeatures = num_variable_features,
                                                       verbose = FALSE)
-    
-  all.genes <- rownames(knockoff_seurat_obj)
 
   knockoff_seurat_obj <- Seurat::ScaleData(knockoff_seurat_obj, verbose = FALSE)
   knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj,
