@@ -47,8 +47,14 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
   colnames(ko) <- paste0(rep("knockoff", num_variable_features), 1:num_variable_features)
   combined_data <- cbind(seurat_obj_data, ko)
 
+
+  # sparsify augmented data matrix and transpose for use in Seurat
+  combined_data <- Matrix::Matrix(t(combined_data), sparse = TRUE)
+
+
+
   new_project_name <- paste0(seurat_obj@project.name, "_with_knockoffs")
-  new_seurat_obj <- Seurat::CreateSeuratObject(counts = t(combined_data), project = new_project_name)
+  new_seurat_obj <- Seurat::CreateSeuratObject(counts = combined_data, project = new_project_name)
 
   return(new_seurat_obj)
 }
