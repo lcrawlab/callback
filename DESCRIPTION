@@ -14,13 +14,7 @@ Imports:
     Seurat (>= 5.0.1),
     lamW,
     knockoff,
-    ggplot2,
-    pdfCluster,
     future,
     stats,
-    Rfast2,
     cli,
-    stringr,
-    presto
-Remotes:
-    immunogenomics/presto
+    stringr
