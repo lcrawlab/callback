@@ -1,5 +1,5 @@
-Package: PCKnockoffs
-Title: What the Package Does (One Line, Title Case)
+Package: callback
+Title: A Knockoff Calibration Method to Avoid Over-Clustering in scRNAseq data
 Version: 0.0.0.9000
 Authors@R: 
     person("Alan", "DenAdel", , "alan_denadel@brown.edu", role = c("aut", "cre"),
