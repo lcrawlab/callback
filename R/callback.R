@@ -61,6 +61,121 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
 
 
 
+
+
+
+#' @title Returns the genes selected by the knockoff filter
+#'
+#' @description Given two Seurat objects, returns the  the genes selected by
+#' the knockoff filter and their W statistics.
+#' @details
+#'
+#' @param seurat_obj A Seurat object
+#' @param cluster1 The Idents of the cluster of interest in seurat_obj1
+#' @param cluster2 The Idents of the cluster of interest in seurat_obj2
+#' @param q The desired rate to control the FDR at
+#' @param return_all Determines if the returned object will contain all genes
+#' or just the selected genes.
+#' @param threshold One of "fdr", "kfwer", or "heuristic".
+#' @param num_cores The number of cores for computing marker genes in parallel.
+#' @returns todo
+#' @name compute_knockoff_filter
+compute_knockoff_filter <- function(seurat_obj,
+                                    cluster1,
+                                    cluster2,
+                                    q,
+                                    return_all = FALSE,
+                                    threshold = "fdr",
+                                    num_cores = 1) {
+  #library(future)
+  options(future.globals.maxSize = 8000 * 1024^2)
+  # todo note what this is for, figure this out as a parameter or programmatically
+  future::plan("multicore", workers = as.numeric(num_cores))
+  # todo log number of cores being used
+  markers <- Seurat::FindMarkers(seurat_obj,
+                         ident.1 = cluster1,
+                         ident.2 = cluster2,
+                         logfc.threshold = 0,
+                         min.pct = 0)
+
+
+  # FindMarkers orders by p-value, so we can't rely on position to know which genes are which
+  knockoff_indices <- grepl("^knockoff", rownames(markers))
+  original_indices <- !knockoff_indices
+
+  # subset the markers data.frame into originals and knockoffs
+  knockoff_markers <- markers[knockoff_indices, ]
+  original_markers <- markers[original_indices, ]
+
+  all_genes <- rownames(seurat_obj)
+
+  # get indices of knockoffs and originals from seurat_obj, should be [FALSE, ..., FALSE, TRUE, ..., TRUE]
+  knockoff_indices_sorted <- grepl("^knockoff", all_genes)
+  original_indices_sorted <- !knockoff_indices_sorted
+
+  knockoff_names_sorted <- all_genes[knockoff_indices_sorted]
+  original_names_sorted <- all_genes[original_indices_sorted]
+
+  # sort markers data.frames by their original orderings
+  knockoff_markers_sorted <- knockoff_markers[knockoff_names_sorted, ]
+  original_markers_sorted <- original_markers[original_names_sorted, ]
+
+  original_p_values <- original_markers_sorted$p_val
+  knockoff_p_values <- knockoff_markers_sorted$p_val
+
+  log_original_p_values <- -log10(original_p_values)
+  log_knockoff_p_values <- -log10(knockoff_p_values)
+
+  W <- log_original_p_values - log_knockoff_p_values
+
+  if (threshold == "fdr") {
+    thres <- knockoff::knockoff.threshold(W, fdr = q, offset = 1)
+  }
+
+  if (threshold == "kfwer") {
+    k <- 10
+    alpha <- q
+    thres <- knockoff.kfwer.threshold(W, k, alpha)
+  }
+
+  if (threshold == "heuristic") {
+    k <- 10
+    alpha <- q
+    thres <- knockoff.heuristic.threshold(W, q, k, alpha)
+  }
+
+  if (return_all) {
+    all_features <- as.data.frame(list("gene" = original_names_sorted, "W" = W))
+
+    ret <-  list("all_features" = all_features, "threshold" = thres)
+
+    return(ret)
+  }
+  selected_indices <- which(W >= thres) # todo check if this should be > (case where threshold is Inf, but there are still some Inf -log p)
+  #selected_indices <- which(W > thres) # todo check if this should be > (case where threshold is Inf, but there are still some Inf -log p)
+
+
+  #print("Num selected indices:")
+  #print(length(selected_indices))
+  selected_genes <- original_names_sorted[selected_indices]
+  selected_Ws <- W[selected_indices]
+
+  selected_features <- as.data.frame(list("selected_gene" = selected_genes, "W" = selected_Ws))
+
+  selected_features <- selected_features[order(selected_features$W, decreasing = TRUE), ]
+
+  ret <-  list("selected_features" = selected_features, "threshold" = thres)
+
+  return(ret)
+}
+
+
+
+
+
+
+
+
 #' @title Runs a typical Seurat workflow on a Seurat object (up to
 #' dimensionality reduction and clustering).
 #'
