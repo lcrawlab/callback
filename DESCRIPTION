@@ -3,7 +3,7 @@ Title: A Knockoff Calibration Method to Avoid Over-Clustering in scRNAseq data
 Version: 0.0.0.9000
 Authors@R: 
     person("Alan", "DenAdel", , "alan_denadel@brown.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-7985-6789"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
