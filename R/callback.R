@@ -108,13 +108,15 @@ FindClustersCallback <- function(seurat_obj,
 
 
   # Pre-process data
-
-  #library(future)
   options(future.globals.maxSize = 8000 * 1024^2)
   # todo log number of cores being used
   future::plan("multicore", workers = as.numeric(cores))
   #options(future.globals.maxSize = 8000 * 1024^2)
-  # todo log number of cores being used
+
+    if (verbose) {
+      message(paste("Number of cores:", cores))
+    }
+
   #plan("multicore", workers = as.numeric(cores))
 
   knockoff_seurat_obj <- Seurat::NormalizeData(knockoff_seurat_obj,
@@ -135,6 +137,9 @@ FindClustersCallback <- function(seurat_obj,
                                                verbose = FALSE)
 
   resolution_param <- resolution_start
+
+
+  first_iteration <- TRUE
 
   while (TRUE) {
     if (verbose) {
@@ -220,6 +225,7 @@ FindClustersCallback <- function(seurat_obj,
           cli::cli_progress_done()
           message("Found clusters with no significant differences.")
           message("Progressing to next clustering iteration.")
+          first_iteration <- FALSE
         }
         break
       }
@@ -229,6 +235,10 @@ FindClustersCallback <- function(seurat_obj,
       next
     }
     break
+  }
+
+  if (first_iteration) {
+    warning("Only a single iteration occurred. The inferred cluster labels may be underclustered. To prevent this, you may want to re-run callback with a larger starting parameter.")
   }
 
   seurat_obj@meta.data$callback_clusters <- Seurat::Idents(knockoff_seurat_obj)
