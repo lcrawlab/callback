@@ -25,13 +25,13 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
   seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay = assay, layer = "counts")[var_features, ])))
 
   if (verbose) {
-    message("Computing MLE for zero-inflated poisson")
+    message("Computing MLE for zero-inflated Poisson for each gene")
   }
 
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
 
   if (verbose) {
-    message("Computing knockoffs")
+    message("Computing knockoff features")
   }
 
   ko <- as.data.frame(lapply(ml_estimates,
