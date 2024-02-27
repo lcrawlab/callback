@@ -31,7 +31,6 @@ data("pbmc3k")
 
 pbmc3k <- UpdateSeuratObject(pbmc3k)
 
-
 pbmc3k <- NormalizeData(pbmc3k)
 pbmc3k <- FindVariableFeatures(pbmc3k)
 pbmc3k <- ScaleData(pbmc3k)
