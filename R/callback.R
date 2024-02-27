@@ -17,8 +17,8 @@
 #' @name get_seurat_obj_with_knockoffs
 get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = TRUE) {
   var_features <- Seurat::VariableFeatures(seurat_obj)
-  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
 
+  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
   #seurat_obj_data <- seurat_obj_data[var_features]
 
   if (verbose) {
@@ -30,11 +30,13 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
   if (verbose) {
     message("Computing MLE for zero-inflated poisson")
   }
+
   ml_estimates <- lapply(seurat_obj_data, estimate_zi_poisson)
 
   if (verbose) {
     message("Computing knockoffs")
   }
+
   ko <- as.data.frame(lapply(ml_estimates,
                              function(x) {
                                            rzipoisson(nrow(seurat_obj_data),
@@ -47,11 +49,8 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
   colnames(ko) <- paste0(rep("knockoff", num_variable_features), 1:num_variable_features)
   combined_data <- cbind(seurat_obj_data, ko)
 
-
   # sparsify augmented data matrix and transpose for use in Seurat
   combined_data <- Matrix::Matrix(t(combined_data), sparse = TRUE)
-
-
 
   new_project_name <- paste0(seurat_obj@project.name, "_with_knockoffs")
   new_seurat_obj <- Seurat::CreateSeuratObject(counts = combined_data, project = new_project_name)
@@ -85,11 +84,10 @@ compute_knockoff_filter <- function(seurat_obj,
                                     q,
                                     return_all = FALSE,
                                     num_cores = 1) {
-  #library(future)
   options(future.globals.maxSize = 8000 * 1024^2)
   # todo note what this is for, figure this out as a parameter or programmatically
   future::plan("multicore", workers = as.numeric(num_cores))
-  # todo log number of cores being used
+
   markers <- Seurat::FindMarkers(seurat_obj,
                          ident.1 = cluster1,
                          ident.2 = cluster2,
@@ -139,9 +137,6 @@ compute_knockoff_filter <- function(seurat_obj,
   selected_indices <- which(W >= thres) # todo check if this should be > (case where threshold is Inf, but there are still some Inf -log p)
   #selected_indices <- which(W > thres) # todo check if this should be > (case where threshold is Inf, but there are still some Inf -log p)
 
-
-  #print("Num selected indices:")
-  #print(length(selected_indices))
   selected_genes <- original_names_sorted[selected_indices]
   selected_Ws <- W[selected_indices]
 
@@ -231,6 +226,7 @@ FindClustersCallback <- function(seurat_obj,
   knockoff_seurat_obj <- Seurat::RunPCA(knockoff_seurat_obj,
                                         features = Seurat::VariableFeatures(object = knockoff_seurat_obj),
                                         verbose = FALSE)
+
   # todo check if i should use all dims for knockoffs
   knockoff_seurat_obj <- Seurat::FindNeighbors(knockoff_seurat_obj,
                                                dims = dims,
@@ -303,10 +299,10 @@ FindClustersCallback <- function(seurat_obj,
           cli::cli_progress_update()
         }
 
-        markers_selected <- compute_knockoff_filter(knockoff_seurat_obj,
-                                                    knock_idents[i],
-                                                    knock_idents[j],
-                                                    0.05, # todo add var names?
+        markers_selected <- compute_knockoff_filter(seurat_obj = knockoff_seurat_obj,
+                                                    cluster1 = knock_idents[i],
+                                                    cluster2 = knock_idents[j],
+                                                    q = 0.05,
                                                     num_cores = cores)
 
         num_selected <- nrow(markers_selected$selected_features)
