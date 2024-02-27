@@ -1,5 +1,7 @@
 
+# https://en.wikipedia.org/wiki/Zero-inflated_model#Estimators_of_ZIP_parameters
 # https://math.stackexchange.com/questions/2761563/maximum-likelihood-estimation-for-zero-inflated-poisson-distribution
+# https://ieeexplore.ieee.org/document/9032203
 estimate_zi_poisson <- function(data) {
   num.zeros <- sum(data == 0)
   r0 <- 1 / length(data) * num.zeros
