@@ -16,16 +16,13 @@
 #' equal number of knockoff features.
 #' @name get_seurat_obj_with_knockoffs
 get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = TRUE) {
-  var_features <- Seurat::VariableFeatures(seurat_obj)
-
-  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts)))
-  #seurat_obj_data <- seurat_obj_data[var_features]
 
   if (verbose) {
     message("Pulling data from Seurat object")
   }
-  #seurat_obj_data <- as.data.frame(t(as.matrix(seurat_obj@assays$RNA@counts[Seurat::VariableFeatures(seurat_obj),])))
-  seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay = assay, layer = "counts")[Seurat::VariableFeatures(seurat_obj), ])))
+
+  var_features <- Seurat::VariableFeatures(seurat_obj)
+  seurat_obj_data <- as.data.frame(t(as.matrix(Seurat::GetAssayData(seurat_obj, assay = assay, layer = "counts")[var_features, ])))
 
   if (verbose) {
     message("Computing MLE for zero-inflated poisson")
