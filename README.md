@@ -25,6 +25,8 @@ library(SeuratData)
 library(callback)
 
 
+set.seed(123)
+
 # load pbmc3k dataset
 SeuratData::InstallData("pbmc3k")
 data("pbmc3k")
