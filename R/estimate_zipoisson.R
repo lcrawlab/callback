@@ -10,7 +10,7 @@ estimate_zi_poisson <- function(data) {
   
   lambda.hat <- lamW::lambertW0(-gamma * exp(-gamma)) + gamma
   
-  pi.hat <- (r0 - exp(-lambda.hat)) / (1 - exp(-lambda.hat))
+  pi.hat <- 1 - x.bar / lambda.hat
 
 
   return.list <- list("lambda.hat" = lambda.hat, "pi.hat" = pi.hat)
