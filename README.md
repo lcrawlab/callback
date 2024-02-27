@@ -7,8 +7,6 @@
 
 ## Introduction
 
-## The Method
-
 ## Installation
 
 You can install the lastest development version by using the [devtools](https://CRAN.R-project.org/package=devtools) library. To install this package with devtools, use this command:
@@ -26,11 +24,12 @@ library(SeuratData)
 
 library(callback)
 
-pbmc3k <- UpdateSeuratObject(pbmc3k)
 
 # load pbmc3k dataset
 SeuratData::InstallData("pbmc3k")
 data("pbmc3k")
+
+pbmc3k <- UpdateSeuratObject(pbmc3k)
 
 
 pbmc3k <- NormalizeData(pbmc3k)
@@ -45,6 +44,9 @@ pbmc_callback <- FindClustersCallback(pbmc3k)
 
 DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 ```
+
+## The Method
+
 
 ## Questions and Feedback
 For questions or concerns with callback, please contact
