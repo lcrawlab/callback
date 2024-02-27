@@ -76,7 +76,6 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
 #' @param q The desired rate to control the FDR at
 #' @param return_all Determines if the returned object will contain all genes
 #' or just the selected genes.
-#' @param threshold One of "fdr", "kfwer", or "heuristic".
 #' @param num_cores The number of cores for computing marker genes in parallel.
 #' @returns todo
 #' @name compute_knockoff_filter
@@ -85,7 +84,6 @@ compute_knockoff_filter <- function(seurat_obj,
                                     cluster2,
                                     q,
                                     return_all = FALSE,
-                                    threshold = "fdr",
                                     num_cores = 1) {
   #library(future)
   options(future.globals.maxSize = 8000 * 1024^2)
@@ -128,21 +126,8 @@ compute_knockoff_filter <- function(seurat_obj,
 
   W <- log_original_p_values - log_knockoff_p_values
 
-  if (threshold == "fdr") {
-    thres <- knockoff::knockoff.threshold(W, fdr = q, offset = 1)
-  }
+  thres <- knockoff::knockoff.threshold(W, fdr = q, offset = 1)
 
-  if (threshold == "kfwer") {
-    k <- 10
-    alpha <- q
-    thres <- knockoff.kfwer.threshold(W, k, alpha)
-  }
-
-  if (threshold == "heuristic") {
-    k <- 10
-    alpha <- q
-    thres <- knockoff.heuristic.threshold(W, q, k, alpha)
-  }
 
   if (return_all) {
     all_features <- as.data.frame(list("gene" = original_names_sorted, "W" = W))

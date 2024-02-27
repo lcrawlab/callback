@@ -10,7 +10,6 @@ compute_knockoff_filter(
   cluster2,
   q,
   return_all = FALSE,
-  threshold = "fdr",
   num_cores = 1
 )
 }
@@ -25,8 +24,6 @@ compute_knockoff_filter(
 
 \item{return_all}{Determines if the returned object will contain all genes
 or just the selected genes.}
-
-\item{threshold}{One of "fdr", "kfwer", or "heuristic".}
 
 \item{num_cores}{The number of cores for computing marker genes in parallel.}
 }
