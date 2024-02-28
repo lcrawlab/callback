@@ -7,7 +7,7 @@
 
 ## Introduction
 
-Standard single-cell RNA-sequencing (scRNA-seq) pipelines nearly always include unsupervised clustering as a key step in identifying biologically distinct cell types. A follow-up step in these pipelines is to test for differential expression between the identified clusters. When algorithms over-cluster, downstream analyses will produce inflated P-values resulting in increased false discoveries. Here, we present `callback` (Calibrated Clustering via Knockoffs): a new method for protecting against over-clustering by controlling for the impact of double-dipping. Importantly, our approach can be applied to any clustering algorithm (implemented here are the Louvain, Leiden, K-means, and hierarchical clustering algorithms). `callback`provides state-of-the-art clustering performance and can rapidly analyze large-scale scRNA-seq studies, even on a personal laptop.
+Standard single-cell RNA-sequencing (scRNA-seq) pipelines nearly always include unsupervised clustering as a key step in identifying biologically distinct cell types. A follow-up step in these pipelines is to test for differential expression between the identified clusters. When algorithms over-cluster, downstream analyses will produce inflated P-values resulting in increased false discoveries. Here, we present `callback` (Calibrated Clustering via Knockoffs): a new method for protecting against over-clustering by controlling for the impact of double-dipping. Importantly, our approach can be applied to any clustering algorithm (implemented here are the Louvain, Leiden, K-means, and hierarchical clustering algorithms). `callback` provides state-of-the-art clustering performance and can rapidly analyze large-scale scRNA-seq studies, even on a personal laptop.
 
 
 ## Installation
@@ -50,6 +50,15 @@ DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 ```
 
 ## The Method
+
+The `callback` algorithm consists of three simple steps:
+
+
+1. First, we generate synthetic null variables, formally called knockoff features, where we augment the single-cell data being analyzed with "fake" genes that are known not to contribute to any unique cell type. 
+2. Second, we perform both preprocessing and clustering on this augmented dataset. 
+3. Third, we calibrate the number of inferred clusters by using a hypothesis testing strategy with a data-dependent threshold to determine if there is a statistically significant difference between groups and if re-clustering should occur.
+
+The synthetic knockoff genes act as negative control variables; they go through the same analytic steps as the real data and are presented with the same opportunity to be identified as marker genes. The `callback` algorithm uses the guiding principle that well-calibrated clusters (i.e., those representing real groups) should have significantly differentially expressed genes after correcting for multiple hypothesis tests, while over-clustered groups will not. We use this rule to iteratively re-cluster cells until the inferred clusters are well-calibrated and the observed differences in expression between groups are not due to the effects of double-dipping.
 
 
 ## Questions and Feedback
