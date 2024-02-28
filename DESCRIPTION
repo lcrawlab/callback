@@ -1,5 +1,5 @@
 Package: callback
-Title: A Knockoff Calibration Method to Avoid Over-Clustering in scRNAseq data
+Title: A Knockoff Calibration Method to Avoid Over-Clustering in scRNAseq Data
 Version: 0.0.0.9000
 Authors@R: 
     person("Alan", "DenAdel", , "alan_denadel@brown.edu", role = c("aut", "cre"),
@@ -18,3 +18,9 @@ Imports:
     cli,
     stringr
 License: MIT + file LICENSE
+Suggests: 
+    knitr,
+    rmarkdown,
+    SeuratData
+Remotes: satijalab/seurat-data
+VignetteBuilder: knitr
