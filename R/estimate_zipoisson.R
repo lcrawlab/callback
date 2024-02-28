@@ -2,7 +2,17 @@
 # https://en.wikipedia.org/wiki/Zero-inflated_model#Estimators_of_ZIP_parameters
 # https://math.stackexchange.com/questions/2761563/maximum-likelihood-estimation-for-zero-inflated-poisson-distribution
 # https://ieeexplore.ieee.org/document/9032203
-# todo document these functions
+
+#' @title Random data generation for the zero-infalted Poisson distribution
+#' with Poisson parameter lambda and zero proportion prop.zero.
+#'
+#' @description Given data, computes the maximum likelihood estimators
+#' for the zero-infalted Poisson distribution.
+#'
+#' @param data The data to estimate parameters from.
+#' @returns Maximum likelihood estimators of for the zero-inflated Poisson
+#' distribution
+#' @name estimate_zi_poisson
 estimate_zi_poisson <- function(data) {
   num.zeros <- sum(data == 0)
   r0 <- 1 / length(data) * num.zeros
@@ -20,6 +30,19 @@ estimate_zi_poisson <- function(data) {
   return(return.list)
 }
 
+
+#' @title Random data generation for the zero-infalted Poisson distribution
+#' with Poisson parameter lambda and zero proportion prop.zero.
+#'
+#' @description Given the number of samples desired, a Poisson parameter,
+#' lambda, and a zero proportion, prop.zero, simulates the number of desired
+#' samples from ZIP(lambda, prop.zero).
+#'
+#' @param n The number of samples to be simulated.
+#' @param lambda The Poisson rate parameter.
+#' @param prop.zero The proportion of excess zeroes.
+#' @returns Simulated data from ZIP(lambda, prop.zero).
+#' @name rzipoisson
 rzipoisson <- function(n, lambda, prop.zero) {
   data <- c()
 

@@ -7,8 +7,6 @@
 #' variable features from the original object and an equal number of knockoff
 #' features.
 #'
-#' @details
-#'
 #' @param seurat_obj A Seurat object containing RNA expression counts.
 #' @param assay The assay to generate knockoffs from.
 #' @param verbose Whether or not to show logging.
@@ -64,7 +62,6 @@ get_seurat_obj_with_knockoffs <- function(seurat_obj, assay = "RNA", verbose = T
 #'
 #' @description Given two Seurat objects, returns the  the genes selected by
 #' the knockoff filter and their W statistics.
-#' @details
 #'
 #' @param seurat_obj A Seurat object
 #' @param cluster1 The Idents of the cluster of interest in seurat_obj1
@@ -160,8 +157,6 @@ compute_knockoff_filter <- function(seurat_obj,
 #' normalized, had variable features identified, scaled, had principal
 #' components computed, hadclusters identified, and had tSNE and UMAP
 #' embeddings determined.
-#'
-#' @details
 #'
 #' @param seurat_obj The Seurat object that will be analyzed.
 #' @param resolution_start The starting resolution to be used for the

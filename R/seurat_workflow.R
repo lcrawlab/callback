@@ -6,8 +6,6 @@
 #' scaled, had principal components computed, had clusters identified, and had
 #' tSNE and UMAP embeddings determined.
 #'
-#' @details
-#'
 #' @param seurat_obj A Seurat object that will be analyzed.
 #' @param num_variable_features The number of variable features to use in the
 #' analysis.
