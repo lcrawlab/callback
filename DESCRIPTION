@@ -4,7 +4,12 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Alan", "DenAdel", , "alan_denadel@brown.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7985-6789"))
-Description: What the package does (one paragraph).
+Description: callback (Calibrated Clustering via Knockoffs) is a method for protecting
+ against over-clustering by controlling for the impact of double-dipping. The approach 
+    can be applied to any clustering algorithm (implemented are the Louvain, Leiden, 
+    K-means, and hierarchical clustering algorithms). The method provides state-of-the-art
+    clustering performance and can rapidly analyze large-scale scRNA-seq studies and is 
+    compatible with the Seurat library.
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
