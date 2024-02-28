@@ -7,6 +7,9 @@
 
 ## Introduction
 
+Standard single-cell RNA-sequencing (scRNA-seq) pipelines nearly always include unsupervised clustering as a key step in identifying biologically distinct cell types. A follow-up step in these pipelines is to test for differential expression between the identified clusters. When algorithms over-cluster, downstream analyses will produce inflated P-values resulting in increased false discoveries. Here, we present `callback` (Calibrated Clustering via Knockoffs): a new method for protecting against over-clustering by controlling for the impact of double-dipping. Importantly, our approach can be applied to any clustering algorithm (implemented here are the Louvain, Leiden, K-means, and hierarchical clustering algorithms). `callback`provides state-of-the-art clustering performance and can rapidly analyze large-scale scRNA-seq studies, even on a personal laptop.
+
+
 ## Installation
 
 You can install the lastest development version by using the [devtools](https://CRAN.R-project.org/package=devtools) library. To install this package with devtools, use this command:
