@@ -48,11 +48,9 @@ pbmc_callback <- FindClustersCallback(pbmc3k)
 
 DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 ```
-
 ## The Method
 
 The `callback` algorithm consists of three simple steps:
-
 
 1. First, we generate synthetic null variables, formally called knockoff features, where we augment the single-cell data being analyzed with "fake" genes that are known not to contribute to any unique cell type. 
 2. Second, we perform both preprocessing and clustering on this augmented dataset. 
@@ -60,10 +58,12 @@ The `callback` algorithm consists of three simple steps:
 
 The synthetic knockoff genes act as negative control variables; they go through the same analytic steps as the real data and are presented with the same opportunity to be identified as marker genes. The `callback` algorithm uses the guiding principle that well-calibrated clusters (i.e., those representing real groups) should have significantly differentially expressed genes after correcting for multiple hypothesis tests, while over-clustered groups will not. We use this rule to iteratively re-cluster cells until the inferred clusters are well-calibrated and the observed differences in expression between groups are not due to the effects of double-dipping.
 
+## Relevant Citations
+A. DenAdel, M. Ramseier, A. Navia, A. Shalek, S. Raghavan, P. Winter, A. Amini, and L. Crawford. A knockoff calibration method to avoid over-clustering in single-cell RNA-sequencing. _bioRxiv_.
 
 ## Questions and Feedback
-For questions or concerns with callback, please contact
-[Alan DenAdel](mailto:alan_denadel@brown.edu).
+For questions or concerns with `callback`, please contact
+[Alan DenAdel](mailto:alan_denadel@brown.edu) or [Lorin Crawford](lcrawford@microsoft.com). Any feedback on the software, manuscript, and tutorials is appreciated.
 
 
 
