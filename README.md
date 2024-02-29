@@ -43,7 +43,7 @@ pbmc_callback <- FindClustersCallback(pbmc3k)
 
 DimPlot(pbmc_default) + DimPlot(pbmc_callback)
 ```
-## The Method
+## Overview of the Method
 
 The `callback` algorithm consists of three simple steps:
 
