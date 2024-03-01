@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{basic-usage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+
 ---
 
 ```{r, include = FALSE}
@@ -46,4 +47,10 @@ pbmc3k <- FindClustersCallback(pbmc3k)
 
 ```{r plot_umap}
 DimPlot(pbmc3k)
+```
+
+Cluster labels from `FindClustersCallback` care stored in in `pbmc3k@meta.data$callback_clusters`.
+
+```{r plot_umap2}
+DimPlot(pbmc3k, group.by = "callback_clusters")
 ```
