@@ -1,5 +1,5 @@
 ---
-title: "basic-usage"
+title: "Basic Usage on PBMC3k Data"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{basic-usage}
