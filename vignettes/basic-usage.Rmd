@@ -16,21 +16,28 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+suppressPackageStartupMessages({
 library(Seurat)
 library(SeuratData)
 
 library(callback)
+})
 ```
+
+First, we use the `SeuratData` data package to first download and then load
+2700 PBMCs. The loaded `SeuratObject`, `pbmc3k`, is from an old version of 
+`Seurat`, and so we update the object to v5.
 
 ```{r load_data}
 set.seed(123)
 
-# load pbmc3k dataset
 SeuratData::InstallData("pbmc3k")
 data("pbmc3k")
 
 pbmc3k <- UpdateSeuratObject(pbmc3k)
 ```
+
+Now, we use `Seurat` to perform the usual preprocessing steps that are performed prior to clustering.
 
 ```{r preprocessing}
 pbmc3k <- NormalizeData(pbmc3k)
@@ -41,15 +48,22 @@ pbmc3k <- FindNeighbors(pbmc3k)
 pbmc3k <- RunUMAP(pbmc3k, dims = 1:10)
 ```
 
+The `callback` algorithm can be run with a single function call as a drop-in
+replacement for the `Seurat` function `FindClusters`.
+
 ```{r run_callback}
 pbmc3k <- FindClustersCallback(pbmc3k)
 ```
+
+The `callback`  clusters are set to the idents of the `SeuratObject` that is
+returned by `FindClustersCallback`
 
 ```{r plot_umap}
 DimPlot(pbmc3k)
 ```
 
-Cluster labels from `FindClustersCallback` care stored in in `pbmc3k@meta.data$callback_clusters`.
+Cluster labels from `FindClustersCallback` care stored in the metadata in the
+column `pbmc3k@meta.data$callback_clusters`.
 
 ```{r plot_umap2}
 DimPlot(pbmc3k, group.by = "callback_clusters")
