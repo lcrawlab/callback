@@ -27,5 +27,6 @@ Suggests:
     knitr,
     rmarkdown,
     SeuratData
-Remotes: satijalab/seurat-data
+Remotes:
+    satijalab/seurat-data
 VignetteBuilder: knitr
