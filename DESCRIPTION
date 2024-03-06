@@ -29,5 +29,4 @@ Suggests:
     knitr,
     rmarkdown,
     SeuratData
-
 VignetteBuilder: knitr
