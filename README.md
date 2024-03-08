@@ -15,7 +15,7 @@ You can install the lastest development version by using the [devtools](https://
 devtools::install_github("lcrawlab/callback")
 ```
 
-Although it is not explicitly a dependency, making sure you have `preso` installed will make `callback` much faster.
+Although it is not explicitly a dependency, making sure you have `presto` installed will make `callback` much faster.
 
 ```r
 devtools::install_github("immunogenomics/presto")
