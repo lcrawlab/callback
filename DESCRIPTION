@@ -1,6 +1,6 @@
 Package: callback
 Title: A Knockoff Calibration Method to Avoid Over-Clustering in scRNAseq Data
-Version: 0.0.0.9000
+Version: 0.0.0
 Authors@R: 
     person("Alan", "DenAdel", , "alan_denadel@brown.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7985-6789"))
