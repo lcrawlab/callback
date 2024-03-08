@@ -13,19 +13,19 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+knitr::opts_chunk$set(eval = FALSE)
+
 ```
 
 ```{r setup}
 suppressPackageStartupMessages({
 library(Seurat)
+library(SeuratData)
 library(callback)
 })
 ```
 
-```{r install_SeuratData}
-devtools::install_github('satijalab/seurat-data')
-library(SeuratData)
-```
 
 First, we use the `SeuratData` data package to first download and then load
 2700 PBMCs. The loaded `SeuratObject`, `pbmc3k`, is from an old version of 
