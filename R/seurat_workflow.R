@@ -19,7 +19,7 @@
 #' @name seurat_workflow
 seurat_workflow <- function(seurat_obj,
                             num_variable_features,
-                            resolution_param = 0.5,
+                            resolution_param = 0.8,
                             visualization_method = "umap",
                             num_dims = 10,
                             algorithm = "louvain") {
