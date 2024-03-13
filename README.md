@@ -66,6 +66,8 @@ The `callback` algorithm uses the guiding principle that well-calibrated cluster
 We use this rule to iteratively re-cluster cells until the inferred clusters are well-calibrated and the observed differences in expression between groups are not due to the effects of double-dipping.
 
 ## Relevant Citations
+`callback` is currently on the bioRxiv, [here](https://www.biorxiv.org/content/10.1101/2024.03.08.584180v1).
+
 A. DenAdel, M. Ramseier, A. Navia, A. Shalek, S. Raghavan, P. Winter, A. Amini, and L. Crawford. A knockoff calibration method to avoid over-clustering in single-cell RNA-sequencing. _bioRxiv_.
 
 ## Questions and Feedback
