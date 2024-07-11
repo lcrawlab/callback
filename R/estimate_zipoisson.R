@@ -3,14 +3,14 @@
 # https://math.stackexchange.com/questions/2761563/maximum-likelihood-estimation-for-zero-inflated-poisson-distribution
 # https://ieeexplore.ieee.org/document/9032203
 
-#' @title Random data generation for the zero-infalted Poisson distribution
+#' @title Maximum likelihood estimation for the zero-inflated Poisson distribution
 #' with Poisson parameter lambda and zero proportion prop.zero.
 #'
 #' @description Given data, computes the maximum likelihood estimators
-#' for the zero-infalted Poisson distribution.
+#' for the zero-inflated Poisson distribution.
 #'
 #' @param data The data to estimate parameters from.
-#' @returns Maximum likelihood estimators of for the zero-inflated Poisson
+#' @returns Maximum likelihood estimators of the zero-inflated Poisson
 #' distribution
 #' @name estimate_zi_poisson
 estimate_zi_poisson <- function(data) {
