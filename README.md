@@ -1,3 +1,5 @@
+# THIS REPOSITORY HAS BEEN ARCHIVED AND WILL NOT BE UPDATED. THIS METHOD HAS BEEN RENAMED recall (Calibrated Clustering with Artificial Variables) AND IS NOW LOCATED IN [THIS REPOSITORY](https://github.com/lcrawlab/recall).
+
 # callback (Calibrated Clustering via Knockoffs) <img src="man/figures/callback_logo.png" align="right" alt="" width="120"/>
 
 [![R CMD check](https://github.com/lcrawlab/callback/actions/workflows/check-standard.yml/badge.svg)](https://github.com/lcrawlab/callback/actions/workflows/check-standard.yml)
